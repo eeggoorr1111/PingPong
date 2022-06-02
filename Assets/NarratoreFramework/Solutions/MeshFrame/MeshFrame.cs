@@ -65,7 +65,7 @@ namespace Narratore.Solutions
 
             line.Start = start.To3D();
             line.End = end.To3D();
-            line.Width = new Vector3(_widthBorder, 0, 0);
+            line.Width = new Vector3(-_widthBorder, 0, 0);
 
             MeshGenerator.AddLine(line, _vertices, _uvs, _triangles);
         }
