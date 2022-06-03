@@ -655,10 +655,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _config:
     _ballParams:
-      _rangeOfSizes: {x: 0.15, y: 0.5}
+      _rangeOfSizes: {x: 0.21, y: 0.5}
       _rangeOfSpeeds: {x: 1, y: 2}
     _racketParams:
-      _size: {x: 2, y: 0.5}
+      _size: {x: 1.3, y: 0.6}
       _ricochetLeftSide: {x: -0.75, y: -0.75}
       _ricochetRightSide: {x: 0, y: 0}
     _map:
