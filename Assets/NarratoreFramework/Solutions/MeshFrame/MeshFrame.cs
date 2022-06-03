@@ -11,6 +11,7 @@ namespace Narratore.Solutions
         [SerializeField] private float _widthBorder;
         [SerializeField] private Vector2 _size;
         [SerializeField] private bool _sizeByOutBorder;
+        [SerializeField] private int _smoothlyCorners;
 
 
         private List<Vector3> _vertices;
@@ -20,9 +21,14 @@ namespace Narratore.Solutions
         private bool _inited;
 
 
-        public void NewFrame(Vector2 size, float widthBorder, bool sizeByOutBorder)
+        public void NewFrame(Vector2 size, float widthBorder, bool sizeByOutBorder, int smoothlyCorners)
         {
             UnityEngine.Mesh mesh = _meshFilter.sharedMesh;
+
+            _size = size;
+            _widthBorder = widthBorder;
+            _sizeByOutBorder = sizeByOutBorder;
+            _smoothlyCorners = smoothlyCorners;
 
             _vertices.Clear();
             _triangles.Clear();
@@ -32,19 +38,29 @@ namespace Narratore.Solutions
 
             float widthFromBorder = sizeByOutBorder ? 0f : widthBorder;
             float halfWidth = widthBorder / 2;
+            float increaseColumn = _smoothlyCorners > 0 ? -halfWidth : halfWidth;
             Vector2 halfSize = size / 2;
+            Vector2 leftColStart = new Vector2(-halfSize.x - widthFromBorder, -halfSize.y - widthFromBorder - increaseColumn);
+            Vector2 leftColEnd = new Vector2(-halfSize.x - widthFromBorder, halfSize.y + widthFromBorder + increaseColumn);
+            Vector2 rightColStart = new Vector2(halfSize.x + widthFromBorder, -halfSize.y - widthFromBorder - increaseColumn);
+            Vector2 rightColEnd = new Vector2(halfSize.x + widthFromBorder, halfSize.y + widthFromBorder + increaseColumn);
 
-            AddColumn(  new Vector2(-halfSize.x - widthFromBorder, -halfSize.y - widthFromBorder - halfWidth),
-                        new Vector2(-halfSize.x - widthFromBorder, halfSize.y + widthFromBorder + halfWidth));
+            AddColumn(leftColStart, leftColEnd);
+            AddColumn(rightColStart, rightColEnd);
 
-            AddColumn(  new Vector2(halfSize.x + widthFromBorder, -halfSize.y - widthFromBorder - halfWidth),
-                        new Vector2(halfSize.x + widthFromBorder, halfSize.y + widthFromBorder + halfWidth));
+            AddRow( new Vector2(-halfSize.x - widthFromBorder + halfWidth, -halfSize.y - widthFromBorder),
+                    new Vector2(halfSize.x + widthFromBorder - halfWidth, -halfSize.y - widthFromBorder));
 
-            AddRow( new Vector2(-halfSize.x - widthFromBorder - halfWidth, -halfSize.y - widthFromBorder),
-                    new Vector2(halfSize.x + widthFromBorder + halfWidth, -halfSize.y - widthFromBorder));
+            AddRow( new Vector2(-halfSize.x - widthFromBorder + halfWidth, halfSize.y + widthFromBorder),
+                    new Vector2(halfSize.x + widthFromBorder - halfWidth, halfSize.y + widthFromBorder));
 
-            AddRow( new Vector2(-halfSize.x - widthFromBorder - halfWidth, halfSize.y + widthFromBorder),
-                    new Vector2(halfSize.x + widthFromBorder + halfWidth, halfSize.y + widthFromBorder));
+            if (_smoothlyCorners > 0)
+            {
+                AddSmoothCorner(leftColStart + new Vector2(halfWidth, 0), widthBorder, Mathf.PI * 1.5f, Mathf.PI);
+                AddSmoothCorner(leftColEnd + new Vector2(halfWidth, 0), widthBorder, Mathf.PI, Mathf.PI * 0.5f);
+                AddSmoothCorner(rightColStart - new Vector2(halfWidth, 0), widthBorder, 0f, Mathf.PI * 1.5f);
+                AddSmoothCorner(rightColEnd - new Vector2(halfWidth, 0), widthBorder, Mathf.PI * 0.5f, 0f);
+            }
 
             mesh.vertices = _vertices.ToArray();
             mesh.triangles = _triangles.ToArray();
@@ -55,13 +71,33 @@ namespace Narratore.Solutions
         public void StartCustom()
         {
             Init();
-            NewFrame(_size, _widthBorder, _sizeByOutBorder);
+            NewFrame(_size, _widthBorder, _sizeByOutBorder, _smoothlyCorners);
         }
 
 
+        private void AddSmoothCorner(Vector2 center2d, float radius, float startRad, float endRad)
+        {
+            // TODO: bottom right corner not view
+            float stepRad = (endRad - startRad) / _smoothlyCorners;
+            float currentRad = startRad + stepRad;
+            Vector3 center = center2d.To3D();
+            Vector3 point1 = center + new Vector3(Mathf.Cos(startRad), Mathf.Sin(startRad), 0) * radius;
+            Vector3 point2 = center + new Vector3(Mathf.Cos(currentRad), Mathf.Sin(currentRad), 0) * radius;
+
+
+            for (int i = 0; i < _smoothlyCorners; i++)
+            {
+                MeshGenerator.Triangle triangle = new MeshGenerator.Triangle(center, point1, point2);
+                MeshGenerator.AddTriangle(triangle, _vertices, _uvs, _triangles);
+
+                currentRad += stepRad;
+                point1 = point2;
+                point2 = center + new Vector3(Mathf.Cos(currentRad), Mathf.Sin(currentRad), 0) * radius;
+            }
+        }
         private void AddColumn(Vector2 start, Vector2 end)
         {
-            MeshGenerator.LineParams line = new MeshGenerator.LineParams();
+            MeshGenerator.Line line = new MeshGenerator.Line();
 
             line.Start = start.To3D();
             line.End = end.To3D();
@@ -71,7 +107,7 @@ namespace Narratore.Solutions
         }
         private void AddRow(Vector2 start, Vector2 end)
         {
-            MeshGenerator.LineParams line = new MeshGenerator.LineParams();
+            MeshGenerator.Line line = new MeshGenerator.Line();
 
             line.Start = start.To3D();
             line.End = end.To3D();
@@ -97,7 +133,7 @@ namespace Narratore.Solutions
             if (_meshFilter.sharedMesh == null)
                 Debug.LogError("Frame require link on mesh", this);
             else
-                NewFrame(_size, _widthBorder, _sizeByOutBorder);
+                NewFrame(_size, _widthBorder, _sizeByOutBorder, _smoothlyCorners);
         }
     }
 }
