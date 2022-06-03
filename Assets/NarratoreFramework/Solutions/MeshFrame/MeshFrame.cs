@@ -19,6 +19,8 @@ namespace Narratore.Solutions
         private List<Vector2> _uvs;
         private MeshFilter _meshFilter;
         private bool _inited;
+        private Vector2 _minPoint;
+        private Vector2 _maxPoint;
 
 
         public void NewFrame(Vector2 size, float widthBorder, bool sizeByOutBorder, int smoothlyCorners)
@@ -29,6 +31,7 @@ namespace Narratore.Solutions
             _widthBorder = widthBorder;
             _sizeByOutBorder = sizeByOutBorder;
             _smoothlyCorners = smoothlyCorners;
+           
 
             _vertices.Clear();
             _triangles.Clear();
@@ -40,19 +43,23 @@ namespace Narratore.Solutions
             float halfWidth = widthBorder / 2;
             float increaseColumn = _smoothlyCorners > 0 ? -halfWidth : halfWidth;
             Vector2 halfSize = size / 2;
+
+            _minPoint = -halfSize - new Vector2(widthFromBorder, widthFromBorder);
+            _maxPoint = halfSize + new Vector2(widthFromBorder, widthFromBorder);
+
             Vector2 leftColStart = new Vector2(-halfSize.x - widthFromBorder, -halfSize.y - widthFromBorder - increaseColumn);
             Vector2 leftColEnd = new Vector2(-halfSize.x - widthFromBorder, halfSize.y + widthFromBorder + increaseColumn);
             Vector2 rightColStart = new Vector2(halfSize.x + widthFromBorder, -halfSize.y - widthFromBorder - increaseColumn);
             Vector2 rightColEnd = new Vector2(halfSize.x + widthFromBorder, halfSize.y + widthFromBorder + increaseColumn);
 
-            AddColumn(leftColStart, leftColEnd);
-            AddColumn(rightColStart, rightColEnd);
+            AddLine(leftColStart, leftColEnd, true);
+            AddLine(rightColStart, rightColEnd, true);
 
-            AddRow( new Vector2(-halfSize.x - widthFromBorder + halfWidth, -halfSize.y - widthFromBorder),
-                    new Vector2(halfSize.x + widthFromBorder - halfWidth, -halfSize.y - widthFromBorder));
+            AddLine( new Vector2(-halfSize.x - widthFromBorder + halfWidth, -halfSize.y - widthFromBorder),
+                    new Vector2(halfSize.x + widthFromBorder - halfWidth, -halfSize.y - widthFromBorder), false);
 
-            AddRow( new Vector2(-halfSize.x - widthFromBorder + halfWidth, halfSize.y + widthFromBorder),
-                    new Vector2(halfSize.x + widthFromBorder - halfWidth, halfSize.y + widthFromBorder));
+            AddLine( new Vector2(-halfSize.x - widthFromBorder + halfWidth, halfSize.y + widthFromBorder),
+                    new Vector2(halfSize.x + widthFromBorder - halfWidth, halfSize.y + widthFromBorder), false);
 
             if (_smoothlyCorners > 0)
             {
@@ -95,25 +102,27 @@ namespace Narratore.Solutions
                 point2 = center + new Vector3(Mathf.Cos(currentRad), Mathf.Sin(currentRad), 0) * radius;
             }
         }
-        private void AddColumn(Vector2 start, Vector2 end)
+        private void AddLine(Vector2 start, Vector2 end, bool isColumn)
         {
             MeshGenerator.Line line = new MeshGenerator.Line();
 
             line.Start = start.To3D();
             line.End = end.To3D();
-            line.Width = new Vector3(-_widthBorder, 0, 0);
 
-            MeshGenerator.AddLine(line, _vertices, _uvs, _triangles);
-        }
-        private void AddRow(Vector2 start, Vector2 end)
-        {
-            MeshGenerator.Line line = new MeshGenerator.Line();
+            if (isColumn)
+                line.Width = new Vector3(-_widthBorder, 0, 0);
+            else
+                line.Width = new Vector3(0, _widthBorder, 0);
 
-            line.Start = start.To3D();
-            line.End = end.To3D();
-            line.Width = new Vector3(0, _widthBorder, 0);
+            MeshGenerator.AddLine(line, _vertices, _triangles);
 
-            MeshGenerator.AddLine(line, _vertices, _uvs, _triangles);
+            for (int i = _vertices.Count - 4; i < _vertices.Count; i++)
+            {
+                float uvX = (_vertices[i].x - _minPoint.x) / (_maxPoint.x - _minPoint.x);
+                float uvY = (_vertices[i].y - _minPoint.y) / (_maxPoint.y - _minPoint.y);
+
+                _uvs.Add(new Vector2(uvX, uvY));
+            }
         }
         private void Init()
         {
