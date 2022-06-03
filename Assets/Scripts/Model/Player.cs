@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace PingPong.Model
 {
-    public class PingPongModel
+    public class Player
     {
     
     }

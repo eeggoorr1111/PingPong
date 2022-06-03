@@ -1,5 +1,4 @@
 using UnityEngine;
-using Zenject;
 using PingPong.View;
 using PingPong.Model;
 
@@ -8,16 +7,13 @@ namespace PingPong
     /// <summary>
     /// Controller в контексте паттерна MVC
     /// </summary>
-    public class Main : MonoBehaviour
+    public sealed class Main : MonoBehaviour
     {
-        [Inject]
-        private void Constructor(PingPongView view)
-        {
-            _view = view;
-        }
+        [SerializeField] private PingPongView _view;
+        [SerializeField] private ModelConfigurator _modelConfigurator;
 
 
-        private PingPongView _view;
+        private IModelPingPong _model;
 
 
         private void Awake()
@@ -27,10 +23,21 @@ namespace PingPong
         private void Start()
         {
             _view.StartCustom();
+            NewGame();
         }
         private void Update()
         {
-            _view.NextFrame(new Vector2(), new Vector2(), new Vector2());
+            _view.NextFrame(_model.Ball.Pos, _model.Racket1.Pos, _model.Racket2.Pos);
+        }
+        private void NewGame()
+        {
+            _model = _modelConfigurator.NewModel(false);
+            _view.SubscribeOnJoystick(_model.MoveRacket);
+        }
+        private void EndGame()
+        {
+            if (_model != null)
+                _view.UnsubscribeOnJoystick(_model.MoveRacket);
         }
     }
 }
