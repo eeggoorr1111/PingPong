@@ -30,14 +30,19 @@ namespace PingPong.View
         public void StartCustom()
         {
             _joystick.StartCustom();
+            
         }
-        public void SubscribeOnJoystick(Action<float> callback)
+        public void NewGame(Vector2 sizeRocket1, Vector2 sizeRocket2, float sizeBall, Action<float> callbackJoystick)
         {
-            _joystickMoved += callback;
+            _joystickMoved += callbackJoystick;
+
+            _racket1.SetSize(sizeRocket1);
+            _racket2.SetSize(sizeRocket2);
+            _ball.SetSize(sizeBall);
         }
-        public void UnsubscribeOnJoystick(Action<float> callback)
+        public void EndGame(Action<float> callbackJoystick)
         {
-            _joystickMoved += callback;
+            _joystickMoved -= callbackJoystick;
         }
         public void NextFrame(Vector2 posBall, Vector2 posRacket1, Vector2 posRacket2)
         {

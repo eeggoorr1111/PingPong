@@ -7,6 +7,8 @@ namespace PingPong.Model.Ball
         public BallModel(BallParams parameters)
         {
             _params = parameters;
+
+            ChangeBallParams();
         }
 
 
@@ -21,7 +23,8 @@ namespace PingPong.Model.Ball
 
         public void ChangeBallParams()
         {
-
+            Speed = Random.Range(_params.RangeOfSpeeds.x, _params.RangeOfSpeeds.y);
+            Size = Random.Range(_params.RangeOfSizes.x, _params.RangeOfSizes.y);
         }
         public void ToFly(TrajectoryBall trajectory)
         {

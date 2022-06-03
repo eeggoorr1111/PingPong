@@ -32,12 +32,12 @@ namespace PingPong
         private void NewGame()
         {
             _model = _modelConfigurator.NewModel(false);
-            _view.SubscribeOnJoystick(_model.MoveRacket);
+            _view.NewGame(_model.Racket1.Size, _model.Racket2.Size, _model.Ball.Size, _model.MoveRacket);
         }
         private void EndGame()
         {
             if (_model != null)
-                _view.UnsubscribeOnJoystick(_model.MoveRacket);
+                _view.EndGame(_model.MoveRacket);
         }
     }
 }

@@ -29,6 +29,7 @@ namespace PingPong.Model.Racket
         public float HalfThickness => Thickness / 2;
         public Vector2 Pos => new Vector2(_posX, _posY);
         public float Width { get; private set; }
+        public Vector2 Size => new Vector2(Width, Thickness);
         public float HalfWidth => Width / 2;
         public IReadOnlyCollection<float> HistoryPos => _historyPos;
 
