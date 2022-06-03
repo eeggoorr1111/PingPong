@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Joystick
-  m_Shader: {fileID: 4800000, guid: 782a9f27436a25042bfbca1466663031, type: 3}
+  m_Name: GameItem
+  m_Shader: {fileID: 4800000, guid: e3a7c4fda7f99c2499d46f79e1de5ac8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -73,6 +73,6 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0, g: 0.43137255, b: 0.72156864, a: 1}
+    - _Color: {r: 0.10849059, g: 0.6730264, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

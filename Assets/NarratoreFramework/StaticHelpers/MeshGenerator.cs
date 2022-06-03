@@ -7,6 +7,15 @@ namespace Narratore.Mesh
     {
         public static void AddLine(Line line, List<Vector3> vertices, List<Vector2> uvs, List<int> triangles)
         {
+            AddLine(line, vertices, triangles);
+
+            uvs.Add(new Vector2(0, 1));
+            uvs.Add(new Vector2(1, 1));
+            uvs.Add(new Vector2(1, 0));
+            uvs.Add(new Vector2(0, 0));
+        }
+        public static void AddLine(Line line, List<Vector3> vertices, List<int> triangles)
+        {
             int startIndexVert = vertices.Count;
             Vector3 halfWidth = line.Width / 2;
             Vector3 vert1 = line.Start + halfWidth;
@@ -19,11 +28,6 @@ namespace Narratore.Mesh
             vertices.Add(vert3);
             vertices.Add(vert4);
 
-            uvs.Add(new Vector2(0, 1));
-            uvs.Add(new Vector2(1, 1));
-            uvs.Add(new Vector2(1, 0));
-            uvs.Add(new Vector2(0, 0));
-
             triangles.Add(startIndexVert);
             triangles.Add(startIndexVert + 1);
             triangles.Add(startIndexVert + 2);
@@ -34,15 +38,19 @@ namespace Narratore.Mesh
         }
         public static void AddTriangle(Triangle triangle, List<Vector3> vertices, List<Vector2> uvs, List<int> triangles)
         {
+            AddTriangle(triangle, vertices, triangles);
+
+            uvs.Add(new Vector2(0, 1));
+            uvs.Add(new Vector2(1, 1));
+            uvs.Add(new Vector2(1, 0));
+        }
+        public static void AddTriangle(Triangle triangle, List<Vector3> vertices, List<int> triangles)
+        {
             int startIndexVert = vertices.Count;
 
             vertices.Add(triangle.Point1);
             vertices.Add(triangle.Point2);
             vertices.Add(triangle.Point3);
-
-            uvs.Add(new Vector2(0, 1));
-            uvs.Add(new Vector2(1, 1));
-            uvs.Add(new Vector2(1, 0));
 
             triangles.Add(startIndexVert);
             triangles.Add(startIndexVert + 1);
