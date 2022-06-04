@@ -6,12 +6,10 @@ namespace PingPong.Model.Racket
     public sealed class RacketParams
     {
         public Vector2 Size => _size;
-        public Vector2 RicochetLeftSide => _ricochetLeftSide;
-        public Vector2 RicochetRightSide => _ricochetRightSide;
+        public float MinAngleRicochet => _minAngleRicochet;
 
 
         [SerializeField] private Vector2 _size;
-        [SerializeField] private Vector2 _ricochetLeftSide;
-        [SerializeField] private Vector2 _ricochetRightSide;
+        [SerializeField] private float _minAngleRicochet;
     }
 }

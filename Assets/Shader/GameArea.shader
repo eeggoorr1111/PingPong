@@ -5,14 +5,17 @@ Shader "PingPong/GameArea"
         _ColorShadow ("Color shadow", Color) = (0,0,0,1)
         _ColorBack ("Color back", Color) = (1,1,1,1)
         _Size ("Size shadow", float) = 0.01
+        _Rounded ("Rounded", int) = 8
     }
     SubShader
     {
         Tags 
         { 
-            "RenderType"="Opaque" 
+            "RenderType"="TransparentCutout"
+            "RenderQueue"="AlphaTest" 
             "IgnoreProjector"="True"
             "ForceNoShadowCasting"="True"
+            "PreviewType"="Plane" 
         }
 
         Lighting Off
@@ -40,6 +43,7 @@ Shader "PingPong/GameArea"
             float4 _ColorShadow;
             float4 _ColorBack;
             float _Size;
+            int _Rounded;
 
             v2f vert (appdata v)
             {
@@ -52,14 +56,14 @@ Shader "PingPong/GameArea"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float2 uv = float2(i.uv.x - 0.5, i.uv.y - 0.5);
-                float endShadow = 0.5 - _Size;
-                float startShadow = 0.5;
-                float shadowIntensiveByX = (abs(uv.x) - endShadow) / _Size;
-                float shadowIntensiveByY = (abs(uv.y) - endShadow) / _Size;
-                float shadowIntensive = saturate(max(shadowIntensiveByX, shadowIntensiveByY));
+                float2 uv = float2(i.uv.x - 0.5, i.uv.y - 0.5) * 2;
+                float result = pow(abs(uv.x), _Rounded) + pow(abs(uv.y), _Rounded);
+                float insideBorder = 1 - _Size;
+                float chooseColor = (result - insideBorder) / _Size;             
 
-                return lerp(_ColorBack, _ColorShadow, shadowIntensive);
+                clip(-result + 1);
+                
+                return lerp(_ColorBack, _ColorShadow, saturate(chooseColor));
             }
             ENDCG
         }

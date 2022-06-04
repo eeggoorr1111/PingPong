@@ -11,8 +11,7 @@ namespace PingPong.Model.Racket
         public RacketModel(Map map, RacketParams parameters, bool isTop)
         {
             _map = map;
-            _ricochetLeftSide = parameters.RicochetLeftSide;
-            _ricochetRightSide = parameters.RicochetRightSide;
+            _minAngleRicochet = parameters.MinAngleRicochet;
             _historyPos = new Queue<float>();
 
             Width = parameters.Size.x;
@@ -32,12 +31,12 @@ namespace PingPong.Model.Racket
         public Vector2 Size => new Vector2(Width, Thickness);
         public float HalfWidth => Width / 2;
         public IReadOnlyCollection<float> HistoryPos => _historyPos;
+        public float MaxAngleRicochet => 180 - _minAngleRicochet;
 
 
         private readonly Map _map;
         private readonly Queue<float> _historyPos;
-        private readonly Vector2 _ricochetLeftSide;
-        private readonly Vector2 _ricochetRightSide;
+        private readonly float _minAngleRicochet;
         private readonly float _posY;
         private float _posX;
        
@@ -63,10 +62,11 @@ namespace PingPong.Model.Racket
         public Vector2 GetRicochetDir(float posCollisionByX)
         {
             (float, float) extremums = GetExtremumsByX(_posX);
-            float posCollision = (posCollisionByX - extremums.Item1) / Width;
-            Vector2 ricochet = Vector2.Lerp(_ricochetLeftSide, _ricochetRightSide, Mathf.Clamp01(posCollision));
+            float posOnRacket = (posCollisionByX - extremums.Item1) / Width;
+            float angleRicochet = Mathf.Lerp(MaxAngleRicochet, _minAngleRicochet, posOnRacket);
+            float angleRicochetRad = angleRicochet * Mathf.Deg2Rad;
 
-            return ricochet.normalized;
+            return new Vector2(Mathf.Cos(angleRicochetRad), Mathf.Sin(angleRicochetRad));
         }
 
 
