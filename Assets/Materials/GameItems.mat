@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GameItem
+  m_Name: GameItems
   m_Shader: {fileID: 4800000, guid: e3a7c4fda7f99c2499d46f79e1de5ac8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
