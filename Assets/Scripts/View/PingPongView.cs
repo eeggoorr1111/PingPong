@@ -4,9 +4,14 @@ using Narratore.Input;
 using Narratore.Helpers;
 using System;
 using PingPong.View.UI;
+using UnityEngine.UI;
 
 namespace PingPong.View
 {
+    /// <summary>
+    /// View - в контексте паттерна MVC. Было бы хорошо создать отдельную сущность для UI и положить туда WindowSkins и кнопку открытия этого окна. 
+    /// Но на данный момент это слишком маленький функционал для выделения под это целого слоя абстракции. В любом случае, это не сложно сделать в будущем.
+    /// </summary>
     public class PingPongView : MonoBehaviour
     {
         [Header("GAME ITEMS")]
@@ -21,7 +26,8 @@ namespace PingPong.View
         [SerializeField] private SkinsDatabase _skins;
 
         [Header("UI")]
-        [SerializeField] private PingPongUI _ui;
+        [SerializeField] private WindowSkins _windowSkins;
+        [SerializeField] private Button _openWindowSkinsBtn;
 
 
         private event Action<float> _joystickMoved;
@@ -32,16 +38,16 @@ namespace PingPong.View
             _ball.AwakeCustom();
             _racket1.AwakeCustom();
             _racket2.AwakeCustom();
-            _ui.AwakeCustom();
 
             _joystickMoved = newPos => { };
         }
         public void StartCustom()
         {
             _joystick.StartCustom();
-            _ui.StartCustom();
+            _windowSkins.Init();
 
-            _ui.SelectedSkinOfBall += SetSkinOnBall;
+            _openWindowSkinsBtn.onClick.AddListener(_windowSkins.Open);
+            _windowSkins.SelectedSkinOfBall += SetSkinOnBall;
         }
         public void NewGame(Vector2 sizeRocket1, Vector2 sizeRocket2, float sizeBall, Action<float> callbackJoystick)
         {
@@ -73,7 +79,11 @@ namespace PingPong.View
         }
         private void OnDestroy()
         {
-            _ui.SelectedSkinOfBall -= SetSkinOnBall;
+            if (_windowSkins != null)
+            {
+                _openWindowSkinsBtn.onClick.RemoveListener(_windowSkins.Open);
+                _windowSkins.SelectedSkinOfBall -= SetSkinOnBall;
+            }
         }
     }
 }

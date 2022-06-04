@@ -1040,8 +1040,9 @@ GameObject:
   - component: {fileID: 1031821662}
   - component: {fileID: 1031821661}
   - component: {fileID: 1031821660}
+  - component: {fileID: 1031821663}
   m_Layer: 0
-  m_Name: SettingsWindow
+  m_Name: WindowSkins
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1128,6 +1129,22 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1031821663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031821658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2bed843fde56a04490f572096eda32e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _closeSettingsBtn: {fileID: 1447211791}
+  _gridSkins: {fileID: 1030505570}
+  _skinIconSample: {fileID: 8722891599302786065, guid: 9878ec62c9dc86a478a761d7ed98b732, type: 3}
+  _skins: {fileID: 11400000, guid: cccd284f4aafc7344b685172cf7246ed, type: 2}
 --- !u!1 &1141243506
 GameObject:
   m_ObjectHideFlags: 0
@@ -1138,7 +1155,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1141243507}
   - component: {fileID: 1141243508}
-  - component: {fileID: 1141243509}
   m_Layer: 0
   m_Name: View
   m_TagString: Untagged
@@ -1185,25 +1201,8 @@ MonoBehaviour:
   _racket2: {fileID: 543990280}
   _joystick: {fileID: 2082425126}
   _skins: {fileID: 11400000, guid: cccd284f4aafc7344b685172cf7246ed, type: 2}
-  _ui: {fileID: 1141243509}
---- !u!114 &1141243509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1141243506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2bed843fde56a04490f572096eda32e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _openSettingsBtn: {fileID: 1835831162}
-  _closeSettingsBtn: {fileID: 1447211791}
-  _windowSettings: {fileID: 1031821662}
-  _gridSkins: {fileID: 1030505570}
-  _skinIconSample: {fileID: 8722891599302786065, guid: 9878ec62c9dc86a478a761d7ed98b732, type: 3}
-  _skins: {fileID: 11400000, guid: cccd284f4aafc7344b685172cf7246ed, type: 2}
+  _windowSkins: {fileID: 1031821663}
+  _openWindowSkinsBtn: {fileID: 1835831162}
 --- !u!1 &1312900699
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,7 +1970,7 @@ GameObject:
   - component: {fileID: 1835831163}
   - component: {fileID: 1835831162}
   m_Layer: 0
-  m_Name: SettingsBtn
+  m_Name: OpenWindowSkilsBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

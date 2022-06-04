@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SkinsWindowIcon
+  m_Name: IconOfWindowSkins
   m_Shader: {fileID: 4800000, guid: 782a9f27436a25042bfbca1466663031, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
