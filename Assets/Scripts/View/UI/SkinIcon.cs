@@ -33,7 +33,7 @@ namespace PingPong.View.UI
         }
         private void OnDestroy()
         {
-            _button.onClick.RemoveAllListeners();
+            _button.onClick.RemoveListener(OnSelected);
         }
     }
 }

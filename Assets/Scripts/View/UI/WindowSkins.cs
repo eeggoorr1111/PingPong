@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 
 namespace PingPong.View.UI
 {
@@ -18,6 +19,7 @@ namespace PingPong.View.UI
 
 
         private Canvas _canvas;
+        private List<SkinIcon> _icons;
 
 
         public void Init()
@@ -30,6 +32,8 @@ namespace PingPong.View.UI
             OpenedWindowSkins += status => { };
             SelectedSkinOfBall += index => { };
 
+            _icons = new List<SkinIcon>();
+
             Transform gridSkinsTransf = _gridSkins.transform;
             for (int i = 0; i < _skins.CountSkins; i++)
             {
@@ -37,6 +41,8 @@ namespace PingPong.View.UI
 
                 icon.Init(_skins.GetSkin(i), i);
                 icon.Selected += OnSelectedSkinOfBall;
+
+                _icons.Add(icon);
             }
         }
         public void Open()
@@ -58,6 +64,11 @@ namespace PingPong.View.UI
         {
             SelectedSkinOfBall.Invoke(index);
             Close();
+        }
+        private void OnDestroy()
+        {
+            foreach (var icon in _icons)
+                icon.Selected -= OnSelectedSkinOfBall;
         }
     }
 }
