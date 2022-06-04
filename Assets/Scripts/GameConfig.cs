@@ -27,13 +27,8 @@ namespace PingPong
         }
 
 
-        [Header("ÏÀĞÀÌÅÒĞÛ Ìß×À")]
         [SerializeField] private BallParams _ballParams;
-
-        [Header("ÏÀĞÀÌÅÒĞÛ ĞÀÊÅÒÎÊ")]
         [SerializeField] private RacketParams _racketParams;
-
-        [Header("ÈÃĞÎÂÎÅ ÏÎËÅ")]
         [SerializeField] private Map _map;
     }
 }

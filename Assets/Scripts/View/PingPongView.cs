@@ -3,6 +3,7 @@ using PingPong.View.GameItems;
 using Narratore.Input;
 using Narratore.Helpers;
 using System;
+using PingPong.View.UI;
 
 namespace PingPong.View
 {
@@ -16,6 +17,13 @@ namespace PingPong.View
         [Header("INPUT")]
         [SerializeField] private Joystick _joystick;
 
+        [Header("SKINS")]
+        [SerializeField] private SkinsDatabase _skins;
+
+        [Header("UI")]
+        [SerializeField] private PingPongUI _ui;
+
+
         private event Action<float> _joystickMoved;
 
 
@@ -24,13 +32,16 @@ namespace PingPong.View
             _ball.AwakeCustom();
             _racket1.AwakeCustom();
             _racket2.AwakeCustom();
+            _ui.AwakeCustom();
 
             _joystickMoved = newPos => { };
         }
         public void StartCustom()
         {
             _joystick.StartCustom();
-            
+            _ui.StartCustom();
+
+            _ui.SelectedSkinOfBall += SetSkinOnBall;
         }
         public void NewGame(Vector2 sizeRocket1, Vector2 sizeRocket2, float sizeBall, Action<float> callbackJoystick)
         {
@@ -53,6 +64,16 @@ namespace PingPong.View
 
             if (_joystick.NextFrame(_racket1.Transf.position.To2D(), out Vector2 newPos))
                 _joystickMoved.Invoke(newPos.x);
+        }
+
+
+        private void SetSkinOnBall(int index)
+        {
+            _ball.SetSkin(_skins.GetSkin(index));
+        }
+        private void OnDestroy()
+        {
+            _ui.SelectedSkinOfBall -= SetSkinOnBall;
         }
     }
 }
