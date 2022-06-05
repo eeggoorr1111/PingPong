@@ -58,12 +58,8 @@ namespace PingPong.Model
                 Segment path = new Segment(from, from + direction * _map.Diagonal, _allowableError);
                 Vector2 intersect;
 
-                if (path.Intersect(_map.TopBorder, out intersect))
-                {
-                    _corners.Add(intersect);
-                    break;
-                }
-                else if (path.Intersect(_map.BottomBorder, out intersect))
+                if (path.Intersect(_map.TopBorder, out intersect) ||
+                    path.Intersect(_map.BottomBorder, out intersect))
                 {
                     _corners.Add(intersect);
                     break;
@@ -84,7 +80,7 @@ namespace PingPong.Model
                 from = _corners[_corners.Count - 1];
             }
 
-            return new TrajectoryBall(_corners.ToArray(), Time.time, GetTimeFly(_corners));
+            return new TrajectoryBall(_corners.ToArray(), Time.time, Time.time + GetTimeFly(_corners));
         }
 
 

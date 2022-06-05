@@ -4,10 +4,18 @@ namespace Narratore.Primitives
 {
     public struct Segment
     {
+        public Segment(float allowableError = float.Epsilon)
+        {
+            _point1 = Vector2.zero;
+            _point2 = Vector2.one;
+
+            _line = new Line2D(_point1, _point2, allowableError);
+        }
         public Segment(Vector2 point1, Vector2 point2, float allowableError = float.Epsilon)
         {
             _point1 = point1;
             _point2 = point2;
+
             _line = new Line2D(_point1, _point2, allowableError);
         }
 
@@ -37,12 +45,12 @@ namespace Narratore.Primitives
         public float Length => (Point2 - Point1).magnitude;
 
 
-        private readonly Line2D _line;
+        private Line2D _line;
         private Vector2 _point1;
         private Vector2 _point2;
 
        
-        public void Set(Vector2 point1, Vector2 point2)
+        public void Change(Vector2 point1, Vector2 point2)
         {
             _point1 = point1;
             _point2 = point2;
@@ -120,12 +128,10 @@ namespace Narratore.Primitives
 
             return (xBetween || yBetween);
         }
-        public Vector2 GetIntersectWithPerpendicularFromPoint(Vector2 point, out bool existsPoint)
+        public bool GetIntersectWithPerpendicularFromPoint(Vector2 point, out Vector2 intersect)
         {
-            Vector2 intersect = _line.GetIntersectWithPerpendicularFrom(point);
-            existsPoint = LiesOnMe(intersect);
-
-            return intersect;
+            intersect = _line.GetIntersectWithPerpendicularFrom(point);
+            return LiesOnMe(intersect);
         }
 
 

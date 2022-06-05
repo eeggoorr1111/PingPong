@@ -35,7 +35,7 @@ namespace PingPong
         private void NewGame()
         {
             _model = _modelConfigurator.NewModel(false);
-            _view.NewGame(_model.Racket1.Size, _model.Racket2.Size, _model.Ball.Size, _model.MoveRacket);
+            _view.NewGame(_model.Racket1.Size, _model.Racket2.Size, _model.Ball.Diameter, _model.MoveRacket);
         }
         private void EndGame()
         {

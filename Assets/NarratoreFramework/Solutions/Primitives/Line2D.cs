@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using Narratore.Helpers;
 
 namespace Narratore.Primitives
 {
@@ -35,17 +35,32 @@ namespace Narratore.Primitives
             A = point1.y - point2.y;
             B = point2.x - point1.x;
             C = point1.x * point2.y - point2.x * point1.y;
+
+            if (A.Is0(AllowableError) && B.Is0(AllowableError))
+                throw new System.Exception($"Коэфициенты прямой A и B не могут оба быть равны 0. Погрешность {AllowableError}");
         }
+        /// <summary>
+        /// !!!!! Если прямая парралельна оси абцисс или ординат, то будут выдаваться некорректные значения.
+        /// Самый частый кейс, когда надо для дебага построить прямую. Поэтому, если оказывается, что прямая 
+        /// парралельна оси Y используем метод <see cref="GetXByY"/>
+        /// </summary>
         public float GetYByX(float x)
         {
-            if (B == 0f)
-                return (-A * x - C);
+            if (B.Is0(AllowableError))
+                return 0;
+            
             return (-A * x - C) / B;
         }
+        /// <summary>
+        /// !!!!! Если прямая парралельна оси абцисс или ординат, то будут выдаваться некорректные значения.
+        /// Самый частый кейс, когда надо для дебага построить прямую. Поэтому, если оказывается, что прямая 
+        /// парралельна оси X используем метод <see cref="GetYByX"/>
+        /// </summary>
         public float GetXByY(float y)
         {
-            if (A == 0f)
-                return (-B * y - C);
+            if (A.Is0(AllowableError))
+                return 0;
+
             return (-B * y - C) / A;
         }
         public Line2D GetPerpendicularFrom(Vector2 point)
@@ -76,16 +91,8 @@ namespace Narratore.Primitives
         }
         public bool IsParallelLine(Line2D line)
         {
-            if ((line.A == 0f && A == 0f) || (line.B == 0f && B == 0f))
-                return true;
-
-            if ((line.A == 0f && A != 0f) || (line.A != 0f && A == 0f))
-                return false;
-
-            if ((line.B == 0f && B != 0f) || (line.B != 0f && B == 0f))
-                return false;
-
-            if (A / line.A == B / line.B)
+            float res = A * line.B - line.A * B;
+            if (res.Is0())
                 return true;
 
             return false;

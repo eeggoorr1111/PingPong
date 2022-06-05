@@ -14,7 +14,8 @@ namespace PingPong.Model.Ball
 
 
         public float Speed { get; private set; }
-        public float Size { get; private set; }
+        public float Diameter { get; private set; }
+        public float Radius => Diameter / 2;
         public Vector2 Pos { get; private set; }
 
 
@@ -25,7 +26,7 @@ namespace PingPong.Model.Ball
         public void ChangeBallParams()
         {
             Speed = Random.Range(_params.RangeOfSpeeds.x, _params.RangeOfSpeeds.y);
-            Size = Random.Range(_params.RangeOfSizes.x, _params.RangeOfSizes.y);
+            Diameter = Random.Range(_params.RangeOfSizes.x, _params.RangeOfSizes.y);
         }
         public void ToFly(TrajectoryBall trajectory)
         {

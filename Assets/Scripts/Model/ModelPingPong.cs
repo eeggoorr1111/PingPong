@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using PingPong.Model.Racket;
 using PingPong.Model.Ball;
+using Narratore.DebugTools;
 
 namespace PingPong.Model
 {
@@ -71,6 +72,23 @@ namespace PingPong.Model
         public void NextFrame()
         {
             Ball.ContinueFly();
+
+            Vector2 ricochetDir;
+            if (IsCollisionBallWith(Racket1, out ricochetDir) || IsCollisionBallWith(Racket2, out ricochetDir))
+            {
+                TrajectoryBall trajectory = _tranjectoryBuilder.Fly(Ball.Pos, ricochetDir);
+                Ball.ToFly(trajectory);
+            }
+
+            DrawerGizmos.Draw(() =>
+            {
+                Gizmos.color = Color.black;
+                Gizmos.DrawSphere(Racket1.RicochetSurface.Point1, 0.1f);
+                Gizmos.DrawSphere(Racket1.RicochetSurface.Point2, 0.1f);
+
+                Gizmos.DrawSphere(Racket2.RicochetSurface.Point1, 0.1f);
+                Gizmos.DrawSphere(Racket2.RicochetSurface.Point2, 0.1f);
+            });
         }
 
 
@@ -87,8 +105,23 @@ namespace PingPong.Model
         private void NewGame()
         {
             TrajectoryBall trajectory = _tranjectoryBuilder.FlyFromCenterToRandomDir();
-
             Ball.ToFly(trajectory);
+        }
+        private bool IsCollisionBallWith(RacketModel racket, out Vector2 ricochetDir)
+        {
+            ricochetDir = new Vector2();
+            
+            if (racket.RicochetSurface.GetIntersectWithPerpendicularFromPoint(Ball.Pos, out Vector2 intersect))
+            {
+                float distanceToBall = (Ball.Pos - intersect).magnitude;
+                if (distanceToBall < Ball.Radius)
+                {
+                    ricochetDir = racket.GetRicochetDir(intersect.x);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

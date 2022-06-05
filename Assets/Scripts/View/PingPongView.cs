@@ -49,13 +49,13 @@ namespace PingPong.View
             _openWindowSkinsBtn.onClick.AddListener(_windowSkins.Open);
             _windowSkins.SelectedSkinOfBall += SetSkinOnBall;
         }
-        public void NewGame(Vector2 sizeRocket1, Vector2 sizeRocket2, float sizeBall, Action<float> callbackJoystick)
+        public void NewGame(Vector2 sizeRocket1, Vector2 sizeRocket2, float diameterBall, Action<float> callbackJoystick)
         {
             _joystickMoved += callbackJoystick;
 
             _racket1.SetSize(sizeRocket1);
             _racket2.SetSize(sizeRocket2);
-            _ball.SetSize(sizeBall);
+            _ball.SetSize(diameterBall);
         }
         public void EndGame(Action<float> callbackJoystick)
         {
