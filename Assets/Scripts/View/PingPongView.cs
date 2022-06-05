@@ -66,15 +66,15 @@ namespace PingPong.View
         {
             _joystickMoved -= callbackJoystick;
         }
-        public void NextFrame(Vector2 posBall, Vector2 posRacket1, Vector2 posRacket2, int reflectedBalls, int recordReflectedBalls)
+        public void NextFrame(FrameData data)
         {
-            _ball.Transf.position = posBall.To3D();
+            _ball.Transf.position = data.PosBall.To3D();
 
-            _racket1.Transf.position = posRacket1.To3D();
-            _racket2.Transf.position = posRacket2.To3D();
+            _racket1.Transf.position = data.PosRacket1.To3D();
+            _racket2.Transf.position = data.PosRacket2.To3D();
 
-            _reflectedBallLbl.text = reflectedBalls.ToString();
-            _recordReflectedBallLbl.text = recordReflectedBalls.ToString();
+            _reflectedBallLbl.text = data.ReflectedBalls.ToString();
+            _recordReflectedBallLbl.text = data.RecordReflectedBalls.ToString();
 
             if (_joystick.NextFrame(_racket1.Transf.position.To2D(), out Vector2 newPos))
                 _joystickMoved.Invoke(newPos.x);

@@ -5,7 +5,7 @@ using PingPong.Model;
 namespace PingPong
 {
     /// <summary>
-    /// Controller в контексте паттерна MVC
+    /// Точка входа и Controller в контексте паттерна MVC
     /// </summary>
     public sealed class Main : MonoBehaviour
     {
@@ -30,7 +30,7 @@ namespace PingPong
         private void Update()
         {
             _model.NextFrame();
-            _view.NextFrame(_model.Ball.Pos, _model.MeRacket.Pos, _model.OpponentRacket.Pos, _model.PlayerMe.ReflectedBalls, _model.PlayerMe.RecordReflectedBalls);
+            _view.NextFrame(GetFrameData());
         }
         private void NewGame()
         {
@@ -41,6 +41,18 @@ namespace PingPong
         {
             if (_model != null)
                 _view.EndGame(_model.MoveRacket);
+        }
+        private FrameData GetFrameData()
+        {
+            FrameData data = new FrameData();
+
+            data.PosBall = _model.Ball.Pos;
+            data.PosRacket1 = _model.MeRacket.Pos;
+            data.PosRacket2 = _model.OpponentRacket.Pos;
+            data.ReflectedBalls = _model.PlayerMe.ReflectedBalls;
+            data.RecordReflectedBalls = _model.PlayerMe.RecordReflectedBalls;
+
+            return data;
         }
     }
 }
