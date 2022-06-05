@@ -23,11 +23,14 @@ namespace PingPong
         private void Start()
         {
             _view.StartCustom();
+            _modelConfigurator.Init();
+
             NewGame();
         }
         private void Update()
         {
             _view.NextFrame(_model.Ball.Pos, _model.Racket1.Pos, _model.Racket2.Pos);
+            _model.NextFrame();
         }
         private void NewGame()
         {

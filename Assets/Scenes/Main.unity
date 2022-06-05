@@ -683,6 +683,7 @@ GameObject:
   - component: {fileID: 657378443}
   - component: {fileID: 657378444}
   - component: {fileID: 657378445}
+  - component: {fileID: 657378446}
   m_Layer: 0
   m_Name: PingPong
   m_TagString: Untagged
@@ -732,6 +733,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config:
+    _allowableError: 0.1
     _ballParams:
       _rangeOfSizes: {x: 0.21, y: 0.5}
       _rangeOfSpeeds: {x: 1, y: 2}
@@ -741,6 +743,18 @@ MonoBehaviour:
     _map:
       _minPoint: {x: -2.374, y: -5.039}
       _maxPoint: {x: 2.357, y: 1.616}
+--- !u!114 &657378446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 657378442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0648081d43007e943835121f2ccf63bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

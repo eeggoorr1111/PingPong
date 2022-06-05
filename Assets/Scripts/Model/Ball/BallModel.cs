@@ -1,4 +1,5 @@
 using UnityEngine;
+using Narratore.DebugTools;
 
 namespace PingPong.Model.Ball
 {
@@ -28,11 +29,17 @@ namespace PingPong.Model.Ball
         }
         public void ToFly(TrajectoryBall trajectory)
         {
-
+            _trajectory = trajectory;
         }
         public void ContinueFly()
         {
+            Pos = _trajectory.GetPosForTime(Time.time);
 
+            DrawerGizmos.Draw(() => {
+                Gizmos.color = Color.red;
+                foreach (var corner in _trajectory.Corners)
+                    Gizmos.DrawSphere(new Vector3(corner.x, corner.y, 0), 0.1f);
+            });
         }
     }
 }

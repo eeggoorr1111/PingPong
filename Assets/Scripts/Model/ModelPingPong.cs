@@ -11,7 +11,8 @@ namespace PingPong.Model
                                     RacketModel racket2, 
                                     BallModel ball, 
                                     Player playerMe, 
-                                    Player playerOpponent)
+                                    Player playerOpponent,
+                                    TrajectoryBallBuilder trajectoryBuilder)
         {
             Racket1 = racket1;
             Racket2 = racket2;
@@ -19,27 +20,34 @@ namespace PingPong.Model
             PlayerMe = playerMe;
             PlayerOpponent = playerOpponent;
 
+            _tranjectoryBuilder = trajectoryBuilder;
             _racketsOfPlayers = new (Player, RacketModel)[2]
             {
                 (PlayerMe, Racket1),
                 (PlayerOpponent, Racket2)
             };
+
+            NewGame();
         }
         public ModelPingPongMaster( RacketModel racket1,
                                     RacketModel racket2,
                                     BallModel ball,
-                                    Player playerMe)
+                                    Player playerMe,
+                                    TrajectoryBallBuilder trajectoryBuilder)
         {
             Racket1 = racket1;
             Racket2 = racket2;
             Ball = ball;
             PlayerMe = playerMe;
 
+            _tranjectoryBuilder = trajectoryBuilder;
             _racketsOfPlayers = new (Player, RacketModel)[2]
             {
                 (PlayerMe, Racket1),
                 (PlayerMe, Racket2)
             };
+
+            NewGame();
         }
 
 
@@ -49,7 +57,7 @@ namespace PingPong.Model
         public Player PlayerMe { get; }
         public Player PlayerOpponent { get; }
 
-
+        private readonly TrajectoryBallBuilder _tranjectoryBuilder;
         private readonly (Player, RacketModel)[] _racketsOfPlayers;
 
 
@@ -62,7 +70,7 @@ namespace PingPong.Model
         }
         public void NextFrame()
         {
-
+            Ball.ContinueFly();
         }
 
 
@@ -75,6 +83,12 @@ namespace PingPong.Model
                     rackets.Add(_racketsOfPlayers[i].Item2);
 
             return rackets;
+        }
+        private void NewGame()
+        {
+            TrajectoryBall trajectory = _tranjectoryBuilder.FlyFromCenterToRandomDir();
+
+            Ball.ToFly(trajectory);
         }
     }
 }

@@ -25,8 +25,10 @@ namespace PingPong
             get { return _map; }
             set { _map = value; }
         }
+        public float AllowableError => _allowableError;
 
 
+        [SerializeField] private float _allowableError;
         [SerializeField] private BallParams _ballParams;
         [SerializeField] private RacketParams _racketParams;
         [SerializeField] private Map _map;
