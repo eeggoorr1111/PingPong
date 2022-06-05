@@ -15,7 +15,7 @@ namespace PingPong.View.UI
         [SerializeField] private Button _closeSettingsBtn;
         [SerializeField] private GridLayoutGroup _gridSkins;
         [SerializeField] private SkinIcon _skinIconSample;
-        [SerializeField] private SkinsDatabase _skins;
+        [SerializeField] private DatabaseProvider _database;
 
 
         private Canvas _canvas;
@@ -35,11 +35,11 @@ namespace PingPong.View.UI
             _icons = new List<SkinIcon>();
 
             Transform gridSkinsTransf = _gridSkins.transform;
-            for (int i = 0; i < _skins.CountSkins; i++)
+            for (int i = 0; i < _database.CountSkins; i++)
             {
                 SkinIcon icon = Instantiate(_skinIconSample, gridSkinsTransf);
 
-                icon.Init(_skins.GetSkin(i), i);
+                icon.Init(_database.GetSkin(i), i);
                 icon.Selected += OnSelectedSkinOfBall;
 
                 _icons.Add(icon);
@@ -62,6 +62,8 @@ namespace PingPong.View.UI
         }
         private void OnSelectedSkinOfBall(int index)
         {
+            _database.SaveIdxSkinOfBall(index);
+
             SelectedSkinOfBall.Invoke(index);
             Close();
         }

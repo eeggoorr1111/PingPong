@@ -23,8 +23,8 @@ namespace PingPong.View
         [Header("INPUT")]
         [SerializeField] private Joystick _joystick;
 
-        [Header("SKINS")]
-        [SerializeField] private SkinsDatabase _skins;
+        [Header("DATABASE")]
+        [SerializeField] private DatabaseProvider _database;
 
         [Header("UI")]
         [SerializeField] private WindowSkins _windowSkins;
@@ -51,6 +51,8 @@ namespace PingPong.View
 
             _openWindowSkinsBtn.onClick.AddListener(_windowSkins.Open);
             _windowSkins.SelectedSkinOfBall += SetSkinOnBall;
+
+            _ball.SetSkin(_database.GetSavedSkinOfBall());
         }
         public void NewGame(Vector2 sizeRocket1, Vector2 sizeRocket2, float diameterBall, Action<float> callbackJoystick)
         {
@@ -81,7 +83,7 @@ namespace PingPong.View
 
         private void SetSkinOnBall(int index)
         {
-            _ball.SetSkin(_skins.GetSkin(index));
+            _ball.SetSkin(_database.GetSkin(index));
         }
         private void OnDestroy()
         {

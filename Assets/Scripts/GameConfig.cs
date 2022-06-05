@@ -26,13 +26,13 @@ namespace PingPong
             set { _map = value; }
         }
         public float AllowableError => _allowableError;
-        public DataBase DataBase => _dataBase;
+        public DatabaseProvider DataBase => _dataBase;
 
 
         [SerializeField] private float _allowableError;
         [SerializeField] private BallParams _ballParams;
         [SerializeField] private RacketParams _racketParams;
         [SerializeField] private Map _map;
-        [SerializeField] private DataBase _dataBase;
+        [SerializeField] private DatabaseProvider _dataBase;
     }
 }

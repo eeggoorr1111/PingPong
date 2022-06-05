@@ -818,7 +818,6 @@ GameObject:
   - component: {fileID: 657378444}
   - component: {fileID: 657378445}
   - component: {fileID: 657378446}
-  - component: {fileID: 657378447}
   m_Layer: 0
   m_Name: PingPong
   m_TagString: Untagged
@@ -878,7 +877,7 @@ MonoBehaviour:
     _map:
       _minPoint: {x: -2.374, y: -5.039}
       _maxPoint: {x: 2.357, y: 1.616}
-    _dataBase: {fileID: 657378447}
+    _dataBase: {fileID: 11400000, guid: 08fc4c4613e4fe049bf9c9c1f72ed261, type: 2}
 --- !u!114 &657378446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -889,18 +888,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0648081d43007e943835121f2ccf63bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &657378447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 657378442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a42a9440e2984ce46bd8151f3bf9c0e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &963194225
@@ -1307,7 +1294,7 @@ MonoBehaviour:
   _closeSettingsBtn: {fileID: 1447211791}
   _gridSkins: {fileID: 1030505570}
   _skinIconSample: {fileID: 8722891599302786065, guid: 9878ec62c9dc86a478a761d7ed98b732, type: 3}
-  _skins: {fileID: 11400000, guid: cccd284f4aafc7344b685172cf7246ed, type: 2}
+  _database: {fileID: 11400000, guid: 08fc4c4613e4fe049bf9c9c1f72ed261, type: 2}
 --- !u!1 &1141243506
 GameObject:
   m_ObjectHideFlags: 0
@@ -1363,7 +1350,7 @@ MonoBehaviour:
   _racket1: {fileID: 1420151769}
   _racket2: {fileID: 543990280}
   _joystick: {fileID: 2082425126}
-  _skins: {fileID: 11400000, guid: cccd284f4aafc7344b685172cf7246ed, type: 2}
+  _database: {fileID: 11400000, guid: 08fc4c4613e4fe049bf9c9c1f72ed261, type: 2}
   _windowSkins: {fileID: 1031821663}
   _openWindowSkinsBtn: {fileID: 1835831162}
   _reflectedBallLbl: {fileID: 221540028}

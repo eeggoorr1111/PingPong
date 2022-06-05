@@ -4,7 +4,7 @@ namespace PingPong.Model.Player
 {
     public class PlayerModel : IPlayer
     {
-        public PlayerModel(DataBase dataBase)
+        public PlayerModel(DatabaseProvider dataBase)
         {
             _dataBase = dataBase;
             RecordReflectedBalls = _dataBase.GetMaxReflectedBalls();
@@ -15,7 +15,7 @@ namespace PingPong.Model.Player
         public int ReflectedBalls { get; private set; }
 
 
-        private readonly DataBase _dataBase;
+        private readonly DatabaseProvider _dataBase;
 
 
         public void ReflectedBall()

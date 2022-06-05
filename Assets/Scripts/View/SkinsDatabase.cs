@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PingPong.View
 {
-    [CreateAssetMenu(fileName = "SkinsDatabase", menuName = "PingPong/SkinsDatabase")]
+    [CreateAssetMenu(fileName = "SkinsDatabase", menuName = "PingPong/CreateSkinsDatabase")]
     public sealed class SkinsDatabase : ScriptableObject
     {
         public int CountSkins => _sprites == null ? 0 : _sprites.Count;
@@ -12,7 +12,7 @@ namespace PingPong.View
         [SerializeField] private Sprite _default;
         [SerializeField] private List<Sprite> _sprites;
 
-
+       
         public Sprite GetSkin(int index)
         {
             if (index < 0)
