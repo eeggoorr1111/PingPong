@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using PingPong.Database;
 
-namespace PingPong.View.UI
+namespace PingPong.View.UI.Windows
 {
     [RequireComponent(typeof(Canvas))]
     public sealed class WindowSkins : MonoBehaviour

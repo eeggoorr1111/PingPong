@@ -1,6 +1,7 @@
 using UnityEngine;
 using PingPong.View;
 using PingPong.Model;
+using PingPong.NetworkLobby;
 
 namespace PingPong
 {
@@ -11,9 +12,11 @@ namespace PingPong
     {
         [SerializeField] private PingPongView _view;
         [SerializeField] private ModelConfigurator _modelConfigurator;
+        [SerializeField] private NetworkLobbyPingPong _networkLobby;
 
 
         private IModelPingPong _model;
+        private bool _isGame;
 
 
         private void Awake()
@@ -23,17 +26,22 @@ namespace PingPong
         private void Start()
         {
             _view.StartCustom();
+            _networkLobby.StartCustom();
             _modelConfigurator.Init();
 
-            NewGame();
+            _view.UI.WindowStart.PressedStartGameBtn += NewGame;
         }
         private void Update()
         {
-            _model.NextFrame();
-            _view.NextFrame(GetFrameData());
+            if (_isGame)
+            {
+                _model.NextFrame();
+                _view.NextFrame(GetFrameData());
+            }
         }
         private void NewGame()
         {
+            _isGame = true;
             _model = _modelConfigurator.NewLocalGame();
             _view.NewGame(_model.MeRacket.Size, _model.OpponentRacket.Size, _model.Ball.Diameter, _model.MoveRacket);
         }
@@ -53,6 +61,10 @@ namespace PingPong
             data.RecordReflectedBalls = _model.PlayerMe.RecordReflectedBalls;
 
             return data;
+        }
+        private void OnDestroy()
+        {
+            _view.UI.WindowStart.PressedStartGameBtn -= NewGame;
         }
     }
 }
