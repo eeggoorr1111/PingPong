@@ -1,6 +1,7 @@
 using UnityEngine;
 using PingPong.Model.Ball;
 using PingPong.Model.Racket;
+using PingPong.Model.Player;
 
 
 namespace PingPong.Model
@@ -23,20 +24,20 @@ namespace PingPong.Model
 
             return this;
         }
-        public IModelPingPong NewModel(bool isMaster)
+        public IModelPingPong NewLocalGame()
         {
             RacketParams pRacket = _config.RacketParams;
             BallParams pBall = _config.BallParams;
 
+            Map map = _config.Map;
             BallModel ball = new BallModel(pBall);
-            RacketModel racket1 = new RacketModel(_config.Map, pRacket, ball, false, _config.AllowableError);
-            RacketModel racket2 = new RacketModel(_config.Map, pRacket, ball, true, _config.AllowableError);
+            RacketModel racket1 = new RacketModel(map, pRacket, ball, false, _config.AllowableError);
+            RacketModel racket2 = new RacketModel(map, pRacket, ball, true, _config.AllowableError);
             
-            Player me = new Player();
-            TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(_config.Map, pRacket, ball, _config.AllowableError);
+            PlayerModel me = new PlayerModel(_config.DataBase);
+            TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(map, pRacket, ball, _config.AllowableError);
 
-
-            return new ModelPingPongMaster(racket1, racket2, ball, me, trajectoryBuilder);
+            return new ModelPingPongLocal((me, racket1), (me, racket2), ball, map, trajectoryBuilder);
         }
     }
 }

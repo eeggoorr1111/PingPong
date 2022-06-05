@@ -46,16 +46,15 @@ namespace PingPong.Model
         private readonly float _allowableError;
 
 
-        public TrajectoryBall FlyFromCenterToRandomDir()
+        public TrajectoryBall FlyFromCenterToRandomDir(bool isToTop)
         {
             float angle = Random.Range(_pRacket.MinAngleRicochet, _pRacket.MaxAngleRicochet);
             float angleRad = angle * Mathf.Deg2Rad;
-            bool isMirror = Random.Range(0f, 1f) > 0.5f;
             Vector2 randomDir = new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
 
-            return Fly(_map.Center, isMirror ? -randomDir : randomDir);
+            return Create(_map.Center, isToTop ? randomDir : -randomDir);
         }
-        public TrajectoryBall Fly(Vector2 from, Vector2 direction)
+        public TrajectoryBall Create(Vector2 from, Vector2 direction)
         {
             _corners.Clear();
             _corners.Add(from);

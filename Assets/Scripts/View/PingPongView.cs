@@ -5,6 +5,7 @@ using Narratore.Helpers;
 using System;
 using PingPong.View.UI;
 using UnityEngine.UI;
+using TMPro;
 
 namespace PingPong.View
 {
@@ -28,6 +29,8 @@ namespace PingPong.View
         [Header("UI")]
         [SerializeField] private WindowSkins _windowSkins;
         [SerializeField] private Button _openWindowSkinsBtn;
+        [SerializeField] private TextMeshProUGUI _reflectedBallLbl;
+        [SerializeField] private TextMeshProUGUI _recordReflectedBallLbl;
 
 
         private event Action<float> _joystickMoved;
@@ -61,12 +64,15 @@ namespace PingPong.View
         {
             _joystickMoved -= callbackJoystick;
         }
-        public void NextFrame(Vector2 posBall, Vector2 posRacket1, Vector2 posRacket2)
+        public void NextFrame(Vector2 posBall, Vector2 posRacket1, Vector2 posRacket2, int reflectedBalls, int recordReflectedBalls)
         {
             _ball.Transf.position = posBall.To3D();
 
             _racket1.Transf.position = posRacket1.To3D();
             _racket2.Transf.position = posRacket2.To3D();
+
+            _reflectedBallLbl.text = reflectedBalls.ToString();
+            _recordReflectedBallLbl.text = recordReflectedBalls.ToString();
 
             if (_joystick.NextFrame(_racket1.Transf.position.To2D(), out Vector2 newPos))
                 _joystickMoved.Invoke(newPos.x);

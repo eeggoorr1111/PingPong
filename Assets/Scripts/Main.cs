@@ -29,13 +29,13 @@ namespace PingPong
         }
         private void Update()
         {
-            _view.NextFrame(_model.Ball.Pos, _model.Racket1.Pos, _model.Racket2.Pos);
             _model.NextFrame();
+            _view.NextFrame(_model.Ball.Pos, _model.MeRacket.Pos, _model.OpponentRacket.Pos, _model.PlayerMe.ReflectedBalls, _model.PlayerMe.RecordReflectedBalls);
         }
         private void NewGame()
         {
-            _model = _modelConfigurator.NewModel(false);
-            _view.NewGame(_model.Racket1.Size, _model.Racket2.Size, _model.Ball.Diameter, _model.MoveRacket);
+            _model = _modelConfigurator.NewLocalGame();
+            _view.NewGame(_model.MeRacket.Size, _model.OpponentRacket.Size, _model.Ball.Diameter, _model.MoveRacket);
         }
         private void EndGame()
         {

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e5a4bfbde0835540ba0a683cb64f3c8, type: 3}
-  m_Name: SkinsDatabase
+  m_Name: Skins
   m_EditorClassIdentifier: 
   _default: {fileID: 21300000, guid: 4a45f9d5a9fb8ce4e83e6d70a7843600, type: 3}
   _sprites:
