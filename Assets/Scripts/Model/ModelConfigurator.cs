@@ -28,9 +28,10 @@ namespace PingPong.Model
             RacketParams pRacket = _config.RacketParams;
             BallParams pBall = _config.BallParams;
 
-            RacketModel racket1 = new RacketModel(_config.Map, pRacket, false, _config.AllowableError);
-            RacketModel racket2 = new RacketModel(_config.Map, pRacket, true, _config.AllowableError);
             BallModel ball = new BallModel(pBall);
+            RacketModel racket1 = new RacketModel(_config.Map, pRacket, ball, false, _config.AllowableError);
+            RacketModel racket2 = new RacketModel(_config.Map, pRacket, ball, true, _config.AllowableError);
+            
             Player me = new Player();
             TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(_config.Map, pRacket, ball, _config.AllowableError);
 

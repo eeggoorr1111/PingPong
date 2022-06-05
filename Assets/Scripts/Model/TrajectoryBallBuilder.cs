@@ -31,6 +31,7 @@ namespace PingPong.Model
             _map = map;
             _ball = ball;
             _allowableError = allowableError;
+            _pRacket = pRackets;
             _maxCountSegments = GetMaxCountSegments(map, pRackets);
 
             _corners = new List<Vector2>();
@@ -39,6 +40,7 @@ namespace PingPong.Model
 
         private readonly Map _map;
         private readonly BallModel _ball;
+        private readonly RacketParams _pRacket;
         private readonly int _maxCountSegments;
         private readonly List<Vector2> _corners;
         private readonly float _allowableError;
@@ -46,7 +48,12 @@ namespace PingPong.Model
 
         public TrajectoryBall FlyFromCenterToRandomDir()
         {
-            return Fly(_map.Center, Random.insideUnitCircle.normalized);
+            float angle = Random.Range(_pRacket.MinAngleRicochet, _pRacket.MaxAngleRicochet);
+            float angleRad = angle * Mathf.Deg2Rad;
+            bool isMirror = Random.Range(0f, 1f) > 0.5f;
+            Vector2 randomDir = new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+
+            return Fly(_map.Center, isMirror ? -randomDir : randomDir);
         }
         public TrajectoryBall Fly(Vector2 from, Vector2 direction)
         {
@@ -55,7 +62,8 @@ namespace PingPong.Model
 
             for (int i = 0; i < _maxCountSegments; i++)
             {
-                Segment path = new Segment(from, from + direction * _map.Diagonal, _allowableError);
+                Vector2 to = from + direction * _map.Diagonal;
+                Segment path = new Segment(from, to, _allowableError);
                 Vector2 intersect;
 
                 if (path.Intersect(_map.TopBorder, out intersect) ||
@@ -75,7 +83,10 @@ namespace PingPong.Model
                     direction = Vector2.Reflect(direction, Vector2.right);
                 }
                 else
-                    Debug.LogError("Почему то отрезок полета мяча ни с чем не пересекается");
+                {
+                    throw new System.Exception($"Отрезок полета мяча ({from} | {to}) ни с чем не пересекается. " +
+                        $"Размер мяча {_ball.Diameter}, позиция {_ball.Pos}");
+                }
 
                 from = _corners[_corners.Count - 1];
             }

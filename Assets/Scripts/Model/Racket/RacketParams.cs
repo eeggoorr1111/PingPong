@@ -7,6 +7,7 @@ namespace PingPong.Model.Racket
     {
         public Vector2 Size => _size;
         public float MinAngleRicochet => _minAngleRicochet;
+        public float MaxAngleRicochet => 180 - _minAngleRicochet;
 
 
         [SerializeField] private Vector2 _size;

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Narratore.Primitives;
+using PingPong.Model.Ball;
 
 namespace PingPong.Model.Racket
 {
@@ -9,10 +10,11 @@ namespace PingPong.Model.Racket
         private static readonly int _sizeHistory = 10;
 
 
-        public RacketModel(Map map, RacketParams parameters, bool isTop, float allowableError)
+        public RacketModel(Map map, RacketParams parameters, BallModel ball, bool isTop, float allowableError)
         {
             _map = map;
-            _minAngleRicochet = parameters.MinAngleRicochet;
+            _params = parameters;
+            _ball = ball;
             _historyPos = new Queue<float>();
 
             Width = parameters.Size.x;
@@ -37,12 +39,12 @@ namespace PingPong.Model.Racket
         public Vector2 Size => new Vector2(Width, Thickness);
         public float HalfWidth => Width / 2;
         public IReadOnlyCollection<float> HistoryPos => _historyPos;
-        public float MaxAngleRicochet => 180 - _minAngleRicochet;
 
 
         private readonly Map _map;
+        private readonly BallModel _ball;
         private readonly Queue<float> _historyPos;
-        private readonly float _minAngleRicochet;
+        private readonly RacketParams _params;
         private readonly bool _isTop;
 
         private Segment _ricochetSurface;
@@ -72,7 +74,7 @@ namespace PingPong.Model.Racket
         public Vector2 GetRicochetDir(float posCollisionByX)
         {
             float posOnRacket = (posCollisionByX - _ricochetSurface.Point1.x) / Width;
-            float angleRicochet = Mathf.Lerp(MaxAngleRicochet, _minAngleRicochet, posOnRacket);
+            float angleRicochet = Mathf.Lerp(_params.MaxAngleRicochet, _params.MinAngleRicochet, posOnRacket);
             float angleRicochetRad = angleRicochet * Mathf.Deg2Rad;
             Vector2 ricochet = new Vector2(Mathf.Cos(angleRicochetRad), Mathf.Sin(angleRicochetRad));
 
@@ -91,8 +93,8 @@ namespace PingPong.Model.Racket
         {
             (float, float) extremums = GetExtremumsByX(_posX);
             float posY = _isTop ? _posY - HalfThickness : _posY + HalfThickness;
-            Vector2 point1 = new Vector2(extremums.Item1, posY);
-            Vector2 point2 = new Vector2(extremums.Item2, posY);
+            Vector2 point1 = new Vector2(extremums.Item1 - _ball.Radius, posY);
+            Vector2 point2 = new Vector2(extremums.Item2 + _ball.Radius, posY);
 
             _ricochetSurface.Change(point1, point2);
         }
