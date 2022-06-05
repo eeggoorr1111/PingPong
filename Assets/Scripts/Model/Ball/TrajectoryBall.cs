@@ -48,8 +48,8 @@ namespace PingPong.Model.Ball
                 float normalizedPosNextCorner = nextLength / Length;
                 float normalizedLengthOfPart = normalizedPosNextCorner - normalizedPosCorner;
 
-                if (normalizedTime > normalizedPosCorner &&
-                    normalizedTime < normalizedPosNextCorner)
+                if (normalizedTime > normalizedPosCorner - float.Epsilon &&
+                    normalizedTime < normalizedPosNextCorner + float.Epsilon)
                 {
                     float normalizedTimeBySegment = (normalizedTime - normalizedPosCorner) / normalizedLengthOfPart;
                     return Vector2.Lerp(_corners[i], _corners[i + 1], normalizedTimeBySegment);
