@@ -9,13 +9,13 @@ using PingPong.Model.Player;
 
 namespace PingPong.Model
 {
-    public sealed class ModelPingPongLocal : IModelPingPong
+    public sealed class ModelLocal : IModelPingPong
     {
-        public ModelPingPongLocal(  (IPlayer, RacketModel) meWithRacket,
-                                    (IPlayer, RacketModel) opponentWithRacket,
-                                    BallModel ball, 
-                                    Map map,
-                                    TrajectoryBallBuilder trajectoryBuilder)
+        public ModelLocal(  (IPlayer, RacketModel) meWithRacket,
+                            (IPlayer, RacketModel) opponentWithRacket,
+                            BallModel ball, 
+                            Map map,
+                            TrajectoryBallBuilder trajectoryBuilder)
         {
             PlayerMe = meWithRacket.Item1;
             PlayerOpponent = opponentWithRacket.Item1;

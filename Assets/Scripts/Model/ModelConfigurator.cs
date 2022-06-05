@@ -8,7 +8,7 @@ namespace PingPong.Model
 {
     public sealed class ModelConfigurator : MonoBehaviour
     {
-        [SerializeField] private GameConfig _config;
+        [SerializeField] private ModelConfigData _config;
 
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace PingPong.Model
             PlayerModel me = new PlayerModel(_config.DataBase);
             TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(map, pRacket, ball, _config.AllowableError);
 
-            return new ModelPingPongLocal((me, racket1), (me, racket2), ball, map, trajectoryBuilder);
+            return new ModelLocal((me, racket1), (me, racket2), ball, map, trajectoryBuilder);
         }
     }
 }

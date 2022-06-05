@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace PingPong.View
+namespace PingPong.Database
 {
     [CreateAssetMenu(fileName = "SkinsDatabase", menuName = "PingPong/CreateSkinsDatabase")]
     public sealed class SkinsDatabase : ScriptableObject

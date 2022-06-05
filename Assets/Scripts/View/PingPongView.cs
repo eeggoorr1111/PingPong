@@ -6,6 +6,7 @@ using System;
 using PingPong.View.UI;
 using UnityEngine.UI;
 using TMPro;
+using PingPong.Database;
 
 namespace PingPong.View
 {

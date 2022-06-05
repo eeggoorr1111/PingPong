@@ -1,4 +1,6 @@
 using UnityEngine;
+using PingPong.Database;
+
 
 namespace PingPong.Model.Player
 {

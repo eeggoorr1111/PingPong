@@ -2,7 +2,7 @@ using UnityEngine;
 using PingPong.View;
 
 
-namespace PingPong
+namespace PingPong.Database
 {
     [CreateAssetMenu(fileName = "DatabaseProvider", menuName = "PingPong/CreateDatabaseProvider")]
     public sealed class DatabaseProvider : ScriptableObject

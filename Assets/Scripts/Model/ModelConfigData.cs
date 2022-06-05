@@ -2,13 +2,14 @@ using UnityEngine;
 using PingPong.Model.Ball;
 using PingPong.Model.Racket;
 using PingPong.Model;
+using PingPong.Database;
 
 
 
 namespace PingPong
 {
     [System.Serializable]
-    public sealed class GameConfig
+    public sealed class ModelConfigData
     {
         public BallParams BallParams
         {
