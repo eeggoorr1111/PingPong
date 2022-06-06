@@ -19,11 +19,11 @@ namespace PingPong.Model.Racket
 
             Width = parameters.Size.x;
             Thickness = parameters.Size.y;
+            IsTop = isTop;
 
-            _isTop = isTop;
             _posX = _map.Center.x;
-            _posY = _isTop ? _map.MaxPoint.y - HalfThickness : 
-                             _map.MinPoint.y + HalfThickness;
+            _posY = IsTop ? _map.MaxPoint.y - HalfThickness : 
+                            _map.MinPoint.y + HalfThickness;
 
             _ricochetSurface = new Segment(allowableError);
             UpdateRicochetSurface();
@@ -39,14 +39,13 @@ namespace PingPong.Model.Racket
         public Vector2 Size => new Vector2(Width, Thickness);
         public float HalfWidth => Width / 2;
         public IReadOnlyCollection<float> HistoryPos => _historyPos;
+        public bool IsTop { get; }
 
 
         private readonly Map _map;
         private readonly BallModel _ball;
         private readonly Queue<float> _historyPos;
         private readonly RacketParams _params;
-        private readonly bool _isTop;
-
         private Segment _ricochetSurface;
         private float _posY;
         private float _posX;
@@ -78,7 +77,7 @@ namespace PingPong.Model.Racket
             float angleRicochetRad = angleRicochet * Mathf.Deg2Rad;
             Vector2 ricochet = new Vector2(Mathf.Cos(angleRicochetRad), Mathf.Sin(angleRicochetRad));
 
-            if (_isTop)
+            if (IsTop)
                 return new Vector2(ricochet.x, -ricochet.y);
 
             return ricochet;
@@ -92,7 +91,7 @@ namespace PingPong.Model.Racket
         private void UpdateRicochetSurface()
         {
             (float, float) extremums = GetExtremumsByX(_posX);
-            float posY = _isTop ? _posY - HalfThickness : _posY + HalfThickness;
+            float posY = IsTop ? _posY - HalfThickness : _posY + HalfThickness;
             Vector2 point1 = new Vector2(extremums.Item1 - _ball.Radius, posY);
             Vector2 point2 = new Vector2(extremums.Item2 + _ball.Radius, posY);
 

@@ -3,7 +3,8 @@ using PingPong.Model.Ball;
 using PingPong.Model.Racket;
 using System.Collections.Generic;
 using Narratore.Primitives;
-using Narratore.DebugTools;
+using System;
+using Random = UnityEngine.Random;
 
 
 namespace PingPong.Model
@@ -26,10 +27,15 @@ namespace PingPong.Model
         }
 
 
-        public TrajectoryBallBuilder(Map map, RacketParams pRackets, BallModel ball, float allowableError)
+        public TrajectoryBallBuilder(   Map map, 
+                                        RacketParams pRackets, 
+                                        BallModel ball, 
+                                        Func<double> timeGetter, 
+                                        float allowableError)
         {
             _map = map;
             _ball = ball;
+            _timeGetter = timeGetter;
             _allowableError = allowableError;
             _pRacket = pRackets;
             _maxCountSegments = GetMaxCountSegments(map, pRackets);
@@ -44,6 +50,7 @@ namespace PingPong.Model
         private readonly int _maxCountSegments;
         private readonly List<Vector2> _corners;
         private readonly float _allowableError;
+        private readonly Func<double> _timeGetter;
 
 
         public TrajectoryBall FlyFromCenterToRandomDir(bool isToTop)
@@ -90,13 +97,15 @@ namespace PingPong.Model
                 from = _corners[_corners.Count - 1];
             }
 
-            return new TrajectoryBall(_corners.ToArray(), Time.time, Time.time + GetTimeFly(_corners));
+            double timeNow = (float)_timeGetter.Invoke();
+
+            return new TrajectoryBall(_corners.ToArray(), timeNow, timeNow + GetTimeFly(_corners));
         }
 
 
-        private float GetTimeFly(IReadOnlyList<Vector2> corners)
+        private double GetTimeFly(IReadOnlyList<Vector2> corners)
         {
-            float distanceTrajectory = 0f;
+            double distanceTrajectory = 0f;
             for (int i = 0; i < corners.Count - 1; i++)
                 distanceTrajectory += (corners[i + 1] - corners[i]).magnitude;
             

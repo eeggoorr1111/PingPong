@@ -1,5 +1,6 @@
 using UnityEngine;
 using Narratore.Primitives;
+using System;
 
 
 namespace PingPong.Model
@@ -7,6 +8,37 @@ namespace PingPong.Model
     [System.Serializable]
     public sealed class Map
     {
+        public static int SizeBytes => 20;
+        public static object Deserialize(byte[] bytes, int fromByte)
+        {
+            float minPointX = BitConverter.ToSingle(bytes, fromByte);
+            float minPointY = BitConverter.ToSingle(bytes, fromByte + 4);
+
+            float maxPointX = BitConverter.ToSingle(bytes, fromByte + 8);
+            float maxPointY = BitConverter.ToSingle(bytes, fromByte + 12);
+
+            float allowableError = BitConverter.ToSingle(bytes, fromByte + 16);
+
+            return new Map( new Vector2(minPointX, minPointY), 
+                            new Vector2(maxPointX, maxPointY),
+                            allowableError);
+        }
+        public static byte[] Serialize(Map obj)
+        {
+            byte[] bytes = new byte[SizeBytes];
+
+            BitConverter.GetBytes(obj.MinPoint.x).CopyTo(bytes, 0);
+            BitConverter.GetBytes(obj.MinPoint.y).CopyTo(bytes, 4);
+
+            BitConverter.GetBytes(obj.MaxPoint.x).CopyTo(bytes, 8);
+            BitConverter.GetBytes(obj.MaxPoint.y).CopyTo(bytes, 12);
+
+            BitConverter.GetBytes(obj.LeftBorder.AllowableError).CopyTo(bytes, 16);
+
+            return bytes;
+        }
+
+
         private Map() {}
         public Map(Vector2 minPoint, Vector2 maxPoint, float allowableError)
         {

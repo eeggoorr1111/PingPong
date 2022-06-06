@@ -6,6 +6,10 @@ using TMPro;
 
 namespace PingPong.View.UI
 {
+    /// <summary>
+    /// Не оч хорошо из <see cref="Main"/> напрямую получать окна UI. Для меньшей связанности лучше было бы сделать
+    /// публичный API у UI для подписки на нужные события. Но для тестового пока так.
+    /// </summary>
     public sealed class UIPingPong : MonoBehaviour
     {
         public WindowSkins WindowSkins => _skinWindows;

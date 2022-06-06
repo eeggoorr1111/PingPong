@@ -1,26 +1,30 @@
 using UnityEngine;
 using Narratore.DebugTools;
+using System;
+using Random = UnityEngine.Random;
 
 namespace PingPong.Model.Ball
 {
     public class BallModel
     {
-        public BallModel(BallParams parameters)
+        public BallModel(BallParams parameters, Func<double> timeGetter)
         {
             _params = parameters;
+            _timeGetter = timeGetter;
 
             ChangeBallParams();
         }
 
 
-        public float Speed { get; private set; }
+        public double Speed { get; private set; }
         public float Diameter { get; private set; }
         public float Radius => Diameter / 2;
         public Vector2 Pos { get; private set; }
+        public TrajectoryBall Trajectory { get; private set; }
 
 
         private readonly BallParams _params;
-        private TrajectoryBall _trajectory;
+        private readonly Func<double> _timeGetter;
 
 
         public void ChangeBallParams()
@@ -30,17 +34,17 @@ namespace PingPong.Model.Ball
         }
         public void ToFly(TrajectoryBall trajectory)
         {
-            _trajectory = trajectory;
+            Trajectory = trajectory;
         }
         public void ContinueFly()
         {
-            Pos = _trajectory.GetPosForTime(Time.time);
+            Pos = Trajectory.GetPosForTime(_timeGetter.Invoke());
 
-            DrawerGizmos.Draw(() => {
+            /*DrawerGizmos.Draw(() => {
                 Gizmos.color = Color.red;
-                foreach (var corner in _trajectory.Corners)
+                foreach (var corner in Trajectory.Corners)
                     Gizmos.DrawSphere(new Vector3(corner.x, corner.y, 0), 0.1f);
-            });
+            });*/
         }
     }
 }

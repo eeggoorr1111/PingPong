@@ -18,8 +18,9 @@ namespace PingPong.Model
                             TrajectoryBallBuilder trajectoryBuilder)
         {
             PlayerMe = meWithRacket.Item1;
-            PlayerOpponent = opponentWithRacket.Item1;
             MeRacket = meWithRacket.Item2;
+
+            PlayerOpponent = opponentWithRacket.Item1;
             OpponentRacket = opponentWithRacket.Item2;
 
             Ball = ball;
@@ -58,42 +59,45 @@ namespace PingPong.Model
         }
         public void NextFrame()
         {
-            Ball.ContinueFly();
-
+            NextFrame(out WhatHappenedToBall whatHappened);
+        }
+        public void NextFrame(out WhatHappenedToBall whatHappened)
+        {
             Vector2 ricochetDir;
 
+            whatHappened = WhatHappenedToBall.ContineFly;
             if (_lastRicochet == OpponentRacket && IsCollisionBallWith(MeRacket, out ricochetDir))
             {
                 _lastRicochet = MeRacket;
                 Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
                 PlayerMe.ReflectedBall();
+
+                whatHappened = WhatHappenedToBall.ReflectedMe;
             }
             else if (_lastRicochet == MeRacket && IsCollisionBallWith(OpponentRacket, out ricochetDir))
             {
                 _lastRicochet = OpponentRacket;
                 Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
                 PlayerOpponent.ReflectedBall();
+
+                whatHappened = WhatHappenedToBall.ReflectedOpponent;
             }
             else if (IsCollisionBallWith(_map.BottomBorder))
             {
                 PlayerMe.LoseBall();
                 NewRound();
+
+                whatHappened = WhatHappenedToBall.LosedMe;
             }
             else if (IsCollisionBallWith(_map.TopBorder))
             {
                 PlayerOpponent.LoseBall();
                 NewRound();
-            }
 
-            DrawerGizmos.Draw(() =>
-            {
-                Gizmos.color = Color.black;
-                Gizmos.DrawSphere(MeRacket.RicochetSurface.Point1, 0.1f);
-                Gizmos.DrawSphere(MeRacket.RicochetSurface.Point2, 0.1f);
+                whatHappened = WhatHappenedToBall.LosedOpponent;
+            }   
 
-                Gizmos.DrawSphere(OpponentRacket.RicochetSurface.Point1, 0.1f);
-                Gizmos.DrawSphere(OpponentRacket.RicochetSurface.Point2, 0.1f);
-            });
+            Ball.ContinueFly();
         }
 
 
@@ -115,7 +119,7 @@ namespace PingPong.Model
             Ball.ChangeBallParams();
             Ball.ToFly(trajectory);
 
-            _lastRicochet = flyToTop ? MeRacket : OpponentRacket;
+            _lastRicochet = flyToTop == MeRacket.IsTop ? OpponentRacket : MeRacket;
         }
         private bool IsCollisionBallWith(RacketModel racket, out Vector2 ricochetDir)
         {
@@ -143,6 +147,20 @@ namespace PingPong.Model
             }
 
             return false;
+        }
+
+
+        /// <summary>
+        /// По хорошшему вместо возврата enum, лучше бы события. Но приложение небольшое,
+        /// поэтому чтобы не заморачиваться с отпиской событий, лучше пока так.
+        /// </summary>
+        public enum WhatHappenedToBall : byte
+        {
+            ContineFly,
+            LosedMe,
+            LosedOpponent,
+            ReflectedMe,
+            ReflectedOpponent
         }
     }
 }

@@ -13,6 +13,9 @@ namespace PingPong.View
         public UIPingPong UI => _ui;
 
 
+        public event Action<float> JoystickMoved;
+
+
         [Header("GAME ITEMS")]
         [SerializeField] private Ball _ball;
         [SerializeField] private Racket _racket1;
@@ -28,16 +31,13 @@ namespace PingPong.View
         [SerializeField] private UIPingPong _ui;
 
 
-        private event Action<float> _joystickMoved;
-
-
         public void AwakeCustom()
         {
             _ball.AwakeCustom();
             _racket1.AwakeCustom();
             _racket2.AwakeCustom();
 
-            _joystickMoved = newPos => { };
+            JoystickMoved = newPos => { };
         }
         public void StartCustom()
         {
@@ -47,17 +47,17 @@ namespace PingPong.View
 
             _ui.WindowSkins.SelectedSkinOfBall += SetSkinOnBall;
         }
-        public void NewGame(Vector2 sizeRocket1, Vector2 sizeRocket2, float diameterBall, Action<float> callbackJoystick)
+        public void NewGame(NewGameData data, Action<float> callbackJoystick)
         {
-            _joystickMoved += callbackJoystick;
+            JoystickMoved += callbackJoystick;
 
-            _racket1.SetSize(sizeRocket1);
-            _racket2.SetSize(sizeRocket2);
-            _ball.SetSize(diameterBall);
+            _racket1.SetSize(data.SizeRacket1);
+            _racket2.SetSize(data.SizeRacket2);
+            _ball.SetSize(data.DiameterBall);
         }
         public void EndGame(Action<float> callbackJoystick)
         {
-            _joystickMoved -= callbackJoystick;
+            JoystickMoved -= callbackJoystick;
         }
         public void NextFrame(FrameData data)
         {
@@ -69,7 +69,7 @@ namespace PingPong.View
             _ui.UpdateReflectedBallsInfo(data.ReflectedBalls, data.RecordReflectedBalls);
 
             if (_joystick.NextFrame(_racket1.Transf.position.To2D(), out Vector2 newPos))
-                _joystickMoved.Invoke(newPos.x);
+                JoystickMoved.Invoke(newPos.x);
         }
 
 
@@ -81,6 +81,22 @@ namespace PingPong.View
         private void OnDestroy()
         {
             _ui.WindowSkins.SelectedSkinOfBall -= SetSkinOnBall;
+        }
+
+
+        public struct FrameData
+        {
+            public Vector2 PosBall;
+            public Vector2 PosRacket1;
+            public Vector2 PosRacket2;
+            public int ReflectedBalls;
+            public int RecordReflectedBalls;
+        }
+        public struct NewGameData
+        {
+            public Vector2 SizeRacket1;
+            public Vector2 SizeRacket2;
+            public float DiameterBall;
         }
     }
 }

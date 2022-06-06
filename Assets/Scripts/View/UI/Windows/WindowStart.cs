@@ -29,6 +29,8 @@ namespace PingPong.View.UI.Windows
             PressedJoinRoomBtn += () => { };
 
             _startGameBtn.onClick.AddListener(OnPressedStartGameBtn);
+            _createRoomBtn.onClick.AddListener(OnPressedCreateRoomBtn);
+            _joinRoomBtn.onClick.AddListener(OnPressedJoinRoomBtn);
 
             _canvas = GetComponent<Canvas>();
         }
@@ -48,10 +50,12 @@ namespace PingPong.View.UI.Windows
         }
         private void OnPressedCreateRoomBtn()
         {
+            _canvas.enabled = false;
             PressedCreateRoomBtn.Invoke();
         }
         private void OnPressedJoinRoomBtn()
         {
+            _canvas.enabled = false;
             PressedJoinRoomBtn.Invoke();
         }
         private void OnDestroy()
