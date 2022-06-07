@@ -7,30 +7,26 @@ namespace PingPong.Model.Ball
 {
     public class BallModel
     {
-        public BallModel(BallParams parameters, Func<double> timeGetter)
+        public BallModel(Func<double> timeGetter)
         {
-            _params = parameters;
             _timeGetter = timeGetter;
-
-            ChangeBallParams();
         }
 
 
-        public double Speed { get; private set; }
+        public float Speed { get; private set; }
         public float Diameter { get; private set; }
         public float Radius => Diameter / 2;
         public Vector2 Pos { get; private set; }
         public TrajectoryBall Trajectory { get; private set; }
 
 
-        private readonly BallParams _params;
         private readonly Func<double> _timeGetter;
 
 
-        public void ChangeBallParams()
+        public void NewParams(float newSpeed, float newDiameter)
         {
-            Speed = Random.Range(_params.RangeOfSpeeds.x, _params.RangeOfSpeeds.y);
-            Diameter = Random.Range(_params.RangeOfSizes.x, _params.RangeOfSizes.y);
+            Speed = newSpeed; 
+            Diameter = newDiameter;
         }
         public void ToFly(TrajectoryBall trajectory)
         {

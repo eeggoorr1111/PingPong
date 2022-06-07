@@ -6,6 +6,7 @@ namespace PingPong
     {
         StartedGame,
         MovedRacket,
-        TryReflectBall
+        ReflectBall,
+        LosedBall
     }
 }

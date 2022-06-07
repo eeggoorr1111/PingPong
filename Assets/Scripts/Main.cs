@@ -15,7 +15,8 @@ namespace PingPong
         [SerializeField] private NetworkLobbyPingPong _networkLobby;
 
 
-        private IModelPingPong _model;
+        private IModel _model;
+        private IModelNetwork _lastModelNetwork;
 
 
         private void Awake()
@@ -46,28 +47,48 @@ namespace PingPong
         }
         private void NewNetworkGameAsMaster()
         {
-            _model = _modelConfigurator.NewNetworkGameAsMaster();
-            _view.NewGame(GetNewGameData(_model), _model.MoveRacket);
+            ModelMaster model = _modelConfigurator.NewNetworkGameAsMaster();
+            NewGame(model);
+
+            _lastModelNetwork = model;
         }
         private void NewNetworkGameAsClient(ModelConfigData config)
         {
-            _model = _modelConfigurator.NewNetworkGameAsClient(config);
-            _view.NewGame(GetNewGameData(_model), _model.MoveRacket);
+            ModelClient model = _modelConfigurator.NewNetworkGameAsClient(config);
+            NewGame(model);
+
+            _lastModelNetwork = model;
         }
         private void NewLocalGame()
         {
-            _model = _modelConfigurator.NewLocalGame();
-            _view.NewGame(GetNewGameData(_model), _model.MoveRacket);
+            NewGame(_modelConfigurator.NewLocalGame());
+        }
+        private void NewGame(IModel model)
+        {
+            if (_lastModelNetwork != null)
+                _lastModelNetwork.Dispose();
+
+            _model = model;
+            _view.NewGame(GetNewGameData(model), model.MoveRacket);
+
+            _model.LoseBall += LoseBallHandler;
         }
         private void EndGame()
         {
+            if (_lastModelNetwork != null)
+                _lastModelNetwork.Dispose();
+
             if (_model != null)
             {
                 _view.EndGame(_model.MoveRacket);
-                _model = null;
+                _model.LoseBall -= LoseBallHandler;
             }
         }
-        private PingPongView.FrameData GetFrameData(IModelPingPong model)
+        private void LoseBallHandler(DataLosedBall data)
+        {
+            _view.LosedBall(data.NewDiameterBall);
+        }
+        private PingPongView.FrameData GetFrameData(IModel model)
         {
             PingPongView.FrameData data = new PingPongView.FrameData();
 
@@ -79,7 +100,7 @@ namespace PingPong
 
             return data;
         }
-        private PingPongView.NewGameData GetNewGameData(IModelPingPong model)
+        private PingPongView.NewGameData GetNewGameData(IModel model)
         {
             PingPongView.NewGameData data = new PingPongView.NewGameData();
 
@@ -98,6 +119,8 @@ namespace PingPong
             _networkLobby.ConnectedToMasterServer -= _view.UI.WindowStart.ActivateNetworkButtons;
             _networkLobby.NewGameAsMaster -= NewNetworkGameAsMaster;
             _networkLobby.NewGameAsClient -= NewNetworkGameAsClient;
+
+            EndGame();
         }
     }
 }

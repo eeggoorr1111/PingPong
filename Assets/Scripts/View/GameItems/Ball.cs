@@ -19,7 +19,7 @@ namespace PingPong.View.GameItems
             _startScale = Transf.localScale;
             _spriteRenderer = GetComponent<SpriteRenderer>();
         }
-        public void SetSize(float newDiameter)
+        public void SetDiameter(float newDiameter)
         {
             Transf.localScale = new Vector3(newDiameter * _startScale.x,
                                             newDiameter * _startScale.y,

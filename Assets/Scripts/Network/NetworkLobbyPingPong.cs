@@ -23,8 +23,9 @@ namespace PingPong.Network
        
         public void Init(ModelConfigData config)
         {
-            PhotonPeer.RegisterType(typeof(DataTryReflectBall), 0, DataTryReflectBall.Serialize, DataTryReflectBall.Deserialize);
-            PhotonPeer.RegisterType(typeof(ModelConfigData), 1, ModelConfigData.Serialize, ModelConfigData.Deserialize);
+            PhotonPeer.RegisterType(typeof(DataReflectBall), 0, DataReflectBall.Serialize, DataReflectBall.Deserialize);
+            PhotonPeer.RegisterType(typeof(DataLosedBall), 1, DataLosedBall.Serialize, DataLosedBall.Deserialize);
+            PhotonPeer.RegisterType(typeof(ModelConfigData), 2, ModelConfigData.Serialize, ModelConfigData.Deserialize);
 
             PhotonNetwork.AddCallbackTarget(this);
 

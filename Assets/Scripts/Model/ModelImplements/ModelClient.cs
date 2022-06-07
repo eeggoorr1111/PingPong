@@ -6,11 +6,12 @@ using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 using PingPong.Network;
+using System;
 
 
 namespace PingPong.Model
 {
-    public sealed class ModelClient : IModelPingPong, IOnEventCallback
+    public sealed class ModelClient : IModelNetwork
     {
         public ModelClient( (IPlayer, RacketModel) meWithRacket,
                             (IPlayer, RacketModel) opponentWithRacket,
@@ -27,7 +28,16 @@ namespace PingPong.Model
 
             _tranjectoryBuilder = trajectoryBuilder;
             _timeCounter = timeCounter;
+
+            ReflectedBall += data => { };
+            LoseBall += data => { };
+
+            PhotonNetwork.AddCallbackTarget(this);
         }
+
+
+        public event Action<DataReflectBall> ReflectedBall;
+        public event Action<DataLosedBall> LoseBall;
 
 
         public RacketModel MeRacket { get; }
@@ -51,8 +61,12 @@ namespace PingPong.Model
                     OpponentRacket.Move((float)photonEvent.CustomData);
                     break;
 
-                case NetworkEvents.TryReflectBall:
-                    TryReflectBall((DataTryReflectBall)photonEvent.CustomData);
+                case NetworkEvents.ReflectBall:
+                    ReflectedBallHandler((DataReflectBall)photonEvent.CustomData);
+                    break;
+
+                case NetworkEvents.LosedBall:
+                    LosedBallHandler((DataLosedBall)photonEvent.CustomData);
                     break;
             }
         }
@@ -76,16 +90,28 @@ namespace PingPong.Model
 
             Ball.ContinueFly();
         }
+        public void Dispose()
+        {
+            PhotonNetwork.RemoveCallbackTarget(this);
+        }
 
 
-        private void TryReflectBall(DataTryReflectBall data)
+        private void ReflectedBallHandler(DataReflectBall data)
         {
             IPlayer player = data.IsClient ? PlayerMe : PlayerOpponent;
+            player.ReflectedBall();
 
-            if (data.IsSuccess)
-                player.ReflectedBall();
-            else
-                player.LoseBall();
+            ReflectedBall.Invoke(data);
+
+            MergeSelfTrajectoryWithTrajectoryMaster(data.NewTrajectoryBall);
+        }
+        private void LosedBallHandler(DataLosedBall data)
+        {
+            IPlayer player = data.IsClient ? PlayerMe : PlayerOpponent;
+            player.LoseBall();
+
+            Ball.NewParams(data.NewSpeedBall, data.NewDiameterBall);
+            LoseBall.Invoke(data);
 
             MergeSelfTrajectoryWithTrajectoryMaster(data.NewTrajectoryBall);
         }

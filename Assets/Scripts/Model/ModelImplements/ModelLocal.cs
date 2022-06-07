@@ -2,18 +2,20 @@ using UnityEngine;
 using System.Collections.Generic;
 using PingPong.Model.Racket;
 using PingPong.Model.Ball;
-using Narratore.DebugTools;
 using Narratore.Primitives;
 using PingPong.Model.Player;
+using System;
+using Random = UnityEngine.Random;
 
 
 namespace PingPong.Model
 {
-    public sealed class ModelLocal : IModelPingPong
+    public sealed class ModelLocal : IModel
     {
         public ModelLocal(  (IPlayer, RacketModel) meWithRacket,
                             (IPlayer, RacketModel) opponentWithRacket,
                             BallModel ball, 
+                            BallParams pBall,
                             Map map,
                             TrajectoryBallBuilder trajectoryBuilder)
         {
@@ -23,7 +25,9 @@ namespace PingPong.Model
             PlayerOpponent = opponentWithRacket.Item1;
             OpponentRacket = opponentWithRacket.Item2;
 
+            _pBall = pBall;
             Ball = ball;
+
             _map = map;
             
             _tranjectoryBuilder = trajectoryBuilder;
@@ -33,8 +37,15 @@ namespace PingPong.Model
                 opponentWithRacket
             };
 
+            ReflectedBall += data => { };
+            LoseBall += data => { };
+
             NewRound();
         }
+
+
+        public event Action<DataReflectBall> ReflectedBall;
+        public event Action<DataLosedBall> LoseBall;
 
 
         public RacketModel MeRacket { get; }
@@ -47,6 +58,7 @@ namespace PingPong.Model
         private readonly Map _map;
         private readonly TrajectoryBallBuilder _tranjectoryBuilder;
         private readonly (IPlayer, RacketModel)[] _racketsOfPlayers;
+        private readonly BallParams _pBall;
         private RacketModel _lastRicochet;
 
 
@@ -59,20 +71,15 @@ namespace PingPong.Model
         }
         public void NextFrame()
         {
-            NextFrame(out WhatHappenedToBall whatHappened);
-        }
-        public void NextFrame(out WhatHappenedToBall whatHappened)
-        {
             Vector2 ricochetDir;
 
-            whatHappened = WhatHappenedToBall.ContineFly;
             if (_lastRicochet == OpponentRacket && IsCollisionBallWith(MeRacket, out ricochetDir))
             {
                 _lastRicochet = MeRacket;
                 Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
                 PlayerMe.ReflectedBall();
 
-                whatHappened = WhatHappenedToBall.ReflectedMe;
+                ReflectedBall.Invoke(new DataReflectBall(false, Ball.Trajectory));
             }
             else if (_lastRicochet == MeRacket && IsCollisionBallWith(OpponentRacket, out ricochetDir))
             {
@@ -80,21 +87,21 @@ namespace PingPong.Model
                 Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
                 PlayerOpponent.ReflectedBall();
 
-                whatHappened = WhatHappenedToBall.ReflectedOpponent;
+                ReflectedBall.Invoke(new DataReflectBall(true, Ball.Trajectory));
             }
             else if (IsCollisionBallWith(_map.BottomBorder))
             {
                 PlayerMe.LoseBall();
                 NewRound();
 
-                whatHappened = WhatHappenedToBall.LosedMe;
+                LoseBall.Invoke(new DataLosedBall(false, Ball.Diameter, Ball.Speed, Ball.Trajectory));
             }
             else if (IsCollisionBallWith(_map.TopBorder))
             {
                 PlayerOpponent.LoseBall();
                 NewRound();
 
-                whatHappened = WhatHappenedToBall.LosedOpponent;
+                LoseBall.Invoke(new DataLosedBall(true, Ball.Diameter, Ball.Speed, Ball.Trajectory));
             }   
 
             Ball.ContinueFly();
@@ -114,10 +121,9 @@ namespace PingPong.Model
         private void NewRound()
         {
             bool flyToTop = Random.Range(0f, 1f) > 0.5f;
-            TrajectoryBall trajectory = _tranjectoryBuilder.FlyFromCenterToRandomDir(flyToTop);
 
-            Ball.ChangeBallParams();
-            Ball.ToFly(trajectory);
+            NewBall();
+            Ball.ToFly(_tranjectoryBuilder.FlyFromCenterToRandomDir(flyToTop));
 
             _lastRicochet = flyToTop == MeRacket.IsTop ? OpponentRacket : MeRacket;
         }
@@ -148,19 +154,12 @@ namespace PingPong.Model
 
             return false;
         }
-
-
-        /// <summary>
-        /// По хорошшему вместо возврата enum, лучше бы события. Но приложение небольшое,
-        /// поэтому чтобы не заморачиваться с отпиской событий, лучше пока так.
-        /// </summary>
-        public enum WhatHappenedToBall : byte
+        private void NewBall()
         {
-            ContineFly,
-            LosedMe,
-            LosedOpponent,
-            ReflectedMe,
-            ReflectedOpponent
+            float speed = Random.Range(_pBall.RangeOfSpeeds.x, _pBall.RangeOfSpeeds.y);
+            float diameter = Random.Range(_pBall.RangeOfSizes.x, _pBall.RangeOfSizes.y);
+
+            Ball.NewParams(speed, diameter);
         }
     }
 }

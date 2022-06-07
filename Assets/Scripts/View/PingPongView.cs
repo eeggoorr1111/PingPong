@@ -53,11 +53,16 @@ namespace PingPong.View
 
             _racket1.SetSize(data.SizeRacket1);
             _racket2.SetSize(data.SizeRacket2);
-            _ball.SetSize(data.DiameterBall);
+
+            NewRound(data.DiameterBall);
         }
         public void EndGame(Action<float> callbackJoystick)
         {
             JoystickMoved -= callbackJoystick;
+        }
+        public void NewRound(float diameterBall)
+        {
+            _ball.SetDiameter(diameterBall);
         }
         public void NextFrame(FrameData data)
         {
@@ -70,6 +75,10 @@ namespace PingPong.View
 
             if (_joystick.NextFrame(_racket1.Transf.position.To2D(), out Vector2 newPos))
                 JoystickMoved.Invoke(newPos.x);
+        }
+        public void LosedBall(float newDiameterBall)
+        {
+            _ball.SetDiameter(newDiameterBall);
         }
 
 

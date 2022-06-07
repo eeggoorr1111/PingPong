@@ -1085,8 +1085,8 @@ MonoBehaviour:
   _localConfig:
     _allowableError: 0.001
     _ballParams:
-      _rangeOfSizes: {x: 0.05, y: 1}
-      _rangeOfSpeeds: {x: 1, y: 10}
+      _rangeOfSizes: {x: 0.25, y: 1}
+      _rangeOfSpeeds: {x: 4, y: 8}
     _racketParams:
       _size: {x: 1.58, y: 0.6}
       _minAngleRicochet: 15

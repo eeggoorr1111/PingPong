@@ -5,19 +5,30 @@ using PingPong.Network;
 using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
-
-using WhatHappenedToBall = PingPong.Model.ModelLocal.WhatHappenedToBall;
+using System;
 
 
 namespace PingPong.Model
 {
-    public sealed class ModelMaster : IModelPingPong, IOnEventCallback
+    public sealed class ModelMaster : IModelNetwork
     {
         public ModelMaster(ModelLocal model, TimeCounterNetwork timeCounter)
         {
             _modelLocal = model;
             _timeCounter = timeCounter;
+
+            ReflectedBall += data => { };
+            LoseBall += data => { };
+
+            _modelLocal.ReflectedBall += ReflectedBallHandler;
+            _modelLocal.LoseBall += LoseBallHandler;
+
+            PhotonNetwork.AddCallbackTarget(this);
         }
+
+
+        public event Action<DataReflectBall> ReflectedBall;
+        public event Action<DataLosedBall> LoseBall;
 
 
         public RacketModel MeRacket => _modelLocal.MeRacket;
@@ -52,26 +63,30 @@ namespace PingPong.Model
         public void NextFrame()
         {
             _timeCounter.NextFrame();
-            _modelLocal.NextFrame(out WhatHappenedToBall whatHappened);
-            SendEventIfNeed(whatHappened);
+            _modelLocal.NextFrame();
+        }
+        public void Dispose()
+        {
+            _modelLocal.ReflectedBall -= ReflectedBallHandler;
+            _modelLocal.LoseBall -= LoseBallHandler;
+
+            PhotonNetwork.RemoveCallbackTarget(this);
         }
 
 
-
-        private void SendEventIfNeed(WhatHappenedToBall whatHappened)
+        private void ReflectedBallHandler(DataReflectBall data)
         {
-            if (whatHappened == WhatHappenedToBall.ContineFly)
-                return;
-
-            bool isSuccess = whatHappened == WhatHappenedToBall.ReflectedMe ||
-                             whatHappened == WhatHappenedToBall.ReflectedOpponent;
-            bool isClient =  whatHappened == WhatHappenedToBall.ReflectedOpponent ||
-                             whatHappened == WhatHappenedToBall.LosedOpponent;
-
             RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.Others };
-            DataTryReflectBall data = new DataTryReflectBall(isClient, isSuccess, Ball.Trajectory);
+            PhotonNetwork.RaiseEvent((byte)NetworkEvents.ReflectBall, data, options, new SendOptions());
 
-            PhotonNetwork.RaiseEvent((byte)NetworkEvents.TryReflectBall, data, options, new SendOptions());
+            ReflectedBall.Invoke(data);
+        }
+        private void LoseBallHandler(DataLosedBall data)
+        {
+            RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.Others };
+            PhotonNetwork.RaiseEvent((byte)NetworkEvents.LosedBall, data, options, new SendOptions());
+
+            LoseBall.Invoke(data);
         }
     }
 }
