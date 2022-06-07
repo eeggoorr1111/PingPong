@@ -1093,7 +1093,7 @@ MonoBehaviour:
     _map:
       _minPoint: {x: -2.36, y: -5.07}
       _maxPoint: {x: 2.346, y: 1.633}
-    _dataBase: {fileID: 11400000, guid: 08fc4c4613e4fe049bf9c9c1f72ed261, type: 2}
+  _dataBase: {fileID: 11400000, guid: 08fc4c4613e4fe049bf9c9c1f72ed261, type: 2}
 --- !u!114 &657378446
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,7 +2,6 @@ using UnityEngine;
 using PingPong.Model.Ball;
 using PingPong.Model.Racket;
 using PingPong.Model;
-using PingPong.Database;
 using System;
 using System.Collections.Generic;
 using Narratore.Helpers;
@@ -62,13 +61,11 @@ namespace PingPong
             set { _map = value; }
         }
         public float AllowableError => _allowableError;
-        public DatabaseProvider DataBase => _dataBase;
 
 
         [SerializeField] private float _allowableError;
         [SerializeField] private BallParams _ballParams;
         [SerializeField] private RacketParams _racketParams;
         [SerializeField] private MapData _map;
-        [SerializeField] private DatabaseProvider _dataBase;
     }
 }

@@ -3,6 +3,7 @@ using PingPong.Model.Ball;
 using PingPong.Model.Racket;
 using PingPong.Model.Player;
 using PingPong.Network;
+using PingPong.Database;
 using System;
 using Random = UnityEngine.Random;
 
@@ -16,6 +17,7 @@ namespace PingPong.Model
 
 
         [SerializeField] private ModelConfigData _localConfig;
+        [SerializeField] private DatabaseProvider _dataBase;
 
 
         public ModelConfigurator ChangeConfig(MapData map)
@@ -38,7 +40,7 @@ namespace PingPong.Model
             RacketModel bottomRacket = new RacketModel(map, pRacket, ball, false, allowableError);
             TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(map, pRacket, ball, timeCounter.GetTime, allowableError);
 
-            IPlayer me = new PlayerModel(_localConfig.DataBase);
+            IPlayer me = new PlayerModel(_dataBase);
             IPlayer notMe = new PlayerModelNotMe();
 
             ModelClient model = new ModelClient((me, topRacket), (notMe, bottomRacket), ball, trajectoryBuilder, timeCounter);
@@ -59,7 +61,7 @@ namespace PingPong.Model
             RacketModel bottomRacket = new RacketModel(map, pRacket, ball, false, allowableError);
             TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(map, pRacket, ball, timeCounter.GetTime, allowableError);
 
-            IPlayer me = new PlayerModel(_localConfig.DataBase);
+            IPlayer me = new PlayerModel(_dataBase);
             IPlayer notMe = new PlayerModelNotMe();
 
             ModelLocal modelLocal = new ModelLocal((me, bottomRacket), (notMe, topRacket), ball, pBall, map, trajectoryBuilder);
@@ -81,7 +83,7 @@ namespace PingPong.Model
             RacketModel bottomRacket = new RacketModel(map, pRacket, ball, false, allowableError);
             TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(map, pRacket, ball, timeGetter, allowableError);
 
-            PlayerModel me = new PlayerModel(_localConfig.DataBase);
+            PlayerModel me = new PlayerModel(_dataBase);
 
             return new ModelLocal((me, topRacket), (me, bottomRacket), ball, pBall, map, trajectoryBuilder);
         }
