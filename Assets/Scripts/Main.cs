@@ -50,22 +50,21 @@ namespace PingPong
         }
         private void NewNetworkGameAsMaster()
         {
-            _model?.Dispose();
             NewGame(_modelConfigurator.NewNetworkGameAsMaster());
         }
         private void NewNetworkGameAsClient(ModelConfigData config)
         {
-            _model?.Dispose();
             NewGame(_modelConfigurator.NewNetworkGameAsClient(config));
         }
         private void NewLocalGame()
         {
-            _model?.Dispose();
             NewGame(_modelConfigurator.NewLocalGame());
         }
         private void NewGame(IModel model)
         {
+            _model?.Dispose();
             _model = model;
+
             _view.NewGame(GetNewGameData(model), model.MoveRacket);
 
             _model.LoseBall += LoseBallHandler;
