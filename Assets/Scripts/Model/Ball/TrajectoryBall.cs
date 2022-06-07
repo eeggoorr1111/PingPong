@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Narratore.Helpers;
 
 namespace PingPong.Model.Ball
 {
@@ -9,23 +10,47 @@ namespace PingPong.Model.Ball
         public static TrajectoryBall Deserialize(byte[] bytes, int startByte)
         {
             double timeBeginFly = BitConverter.ToDouble(bytes, startByte);
-            double timeEndFly = BitConverter.ToDouble(bytes, startByte + 8);
-            short countCorners = BitConverter.ToInt16(bytes, startByte + 16);
-            Vector2[] corners = new Vector2[countCorners];
+            startByte += timeBeginFly.Sizeof();
 
-            startByte += 18;
+            double timeEndFly = BitConverter.ToDouble(bytes, startByte);
+            startByte += timeEndFly.Sizeof();
+
+            int countCorners = BitConverter.ToInt32(bytes, startByte);
+            startByte += countCorners.Sizeof();
+
+            Vector2[] corners = new Vector2[countCorners];
             for (short i = 0; i < countCorners; i++)
             {
                 float x = BitConverter.ToSingle(bytes, startByte);
-                float y = BitConverter.ToSingle(bytes, startByte + 4);
+                startByte += x.Sizeof();
+
+                float y = BitConverter.ToSingle(bytes, startByte);
+                startByte += y.Sizeof();
 
                 corners[i] = new Vector2(x, y);
-                startByte += 8;
             }
 
             return new TrajectoryBall(corners, timeBeginFly, timeEndFly);
         }
-        
+        public static byte[] Serialize(TrajectoryBall trajectory)
+        {
+            List<byte> bytes = new List<byte>(trajectory.Sizeof);
+
+            bytes.AddRange(BitConverter.GetBytes(trajectory.TimeBeginFly));
+            bytes.AddRange(BitConverter.GetBytes(trajectory.TimeEndFly));
+            bytes.AddRange(BitConverter.GetBytes(trajectory.Corners.Count));
+
+            for (short i = 0; i < trajectory.Corners.Count; i++)
+            {
+                Vector2 corner = trajectory.Corners[i];
+
+                bytes.AddRange(BitConverter.GetBytes(corner.x));
+                bytes.AddRange(BitConverter.GetBytes(corner.y));
+            }
+
+            return bytes.ToArray();
+        }
+
 
 
         public TrajectoryBall(Vector2[] corners, double timeBeginFly, double timeEndFly)
@@ -53,6 +78,7 @@ namespace PingPong.Model.Ball
         public float Length { get; }
         public double TimeFly => TimeEndFly - TimeBeginFly;
         public IReadOnlyList<Vector2> Corners => _corners;
+        public int Sizeof => _corners.Sizeof(true) + TimeBeginFly.Sizeof() + TimeEndFly.Sizeof();
 
 
         private readonly Vector2[] _corners;
@@ -91,29 +117,6 @@ namespace PingPong.Model.Ball
             Debug.LogError($"Не удалось найти точку на траектории полета от времени {time}");
 
             return new Vector2();
-        }
-        public int GetSizeInBytes()
-        {
-            return _corners.Length * 8 + 2 + 8 + 8;
-        }
-        public byte[] Serialize()
-        {
-            byte[] bytes = new byte[GetSizeInBytes()];
-
-            BitConverter.GetBytes(TimeBeginFly).CopyTo(bytes, 0);
-            BitConverter.GetBytes(TimeEndFly).CopyTo(bytes, 8);
-            BitConverter.GetBytes((short)Corners.Count).CopyTo(bytes, 16);
-
-            int startByte = 18;
-            for (short i = 0; i < Corners.Count; i++)
-            {
-                BitConverter.GetBytes(_corners[i].x).CopyTo(bytes, startByte);
-                BitConverter.GetBytes(_corners[i].y).CopyTo(bytes, startByte + 4);
-
-                startByte += 8;
-            }
-
-            return bytes;
         }
     }
 }

@@ -25,8 +25,6 @@ namespace PingPong
         }
         private void Start()
         {
-            _modelConfigurator.Init();
-
             _view.StartCustom();
             _view.UI.WindowStart.PressedStartGameBtn += NewLocalGame;
             _view.UI.WindowStart.PressedCreateRoomBtn += _networkLobby.CreateRoom;

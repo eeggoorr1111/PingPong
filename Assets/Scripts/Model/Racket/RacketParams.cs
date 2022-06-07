@@ -1,31 +1,34 @@
 using UnityEngine;
 using System;
+using Narratore.Helpers;
+using System.Collections.Generic;
 
 namespace PingPong.Model.Racket
 {
     [System.Serializable]
     public sealed class RacketParams
     {
-        public static int SizeBytes => 12;
         public static object Deserialize(byte[] bytes, int fromByte)
         {
             float sizeX = BitConverter.ToSingle(bytes, fromByte);
-            float sizeY = BitConverter.ToSingle(bytes, fromByte + 4);
+            fromByte += sizeX.Sizeof();
 
-            float minAngleRicochet = BitConverter.ToSingle(bytes, fromByte + 8);
+            float sizeY = BitConverter.ToSingle(bytes, fromByte);
+            fromByte += sizeY.Sizeof();
+
+            float minAngleRicochet = BitConverter.ToSingle(bytes, fromByte);
 
             return new RacketParams(new Vector2(sizeX, sizeY), minAngleRicochet);
         }
         public static byte[] Serialize(RacketParams obj)
         {
-            byte[] bytes = new byte[SizeBytes];
+            List<byte> bytes = new List<byte>(obj.Sizeof);
 
-            BitConverter.GetBytes(obj.Size.x).CopyTo(bytes, 0);
-            BitConverter.GetBytes(obj.Size.y).CopyTo(bytes, 4);
+            bytes.AddRange(BitConverter.GetBytes(obj.Size.x));
+            bytes.AddRange(BitConverter.GetBytes(obj.Size.y));
+            bytes.AddRange(BitConverter.GetBytes(obj.MinAngleRicochet));
 
-            BitConverter.GetBytes(obj.MinAngleRicochet).CopyTo(bytes, 8);
-
-            return bytes;
+            return bytes.ToArray();
         }
 
 
@@ -37,6 +40,7 @@ namespace PingPong.Model.Racket
         }
 
 
+        public int Sizeof => _size.Sizeof() + _minAngleRicochet.Sizeof();
         public Vector2 Size => _size;
         public float MinAngleRicochet => _minAngleRicochet;
         public float MaxAngleRicochet => 180 - _minAngleRicochet;

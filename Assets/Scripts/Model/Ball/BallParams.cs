@@ -1,34 +1,40 @@
 using UnityEngine;
 using System;
+using Narratore.Helpers;
+using System.Collections.Generic;
 
 namespace PingPong.Model.Ball
 {
     [System.Serializable]
     public sealed class BallParams
     {
-        public static int SizeBytes => 16;
         public static object Deserialize(byte[] bytes, int fromByte)
         {
             float minSize = BitConverter.ToSingle(bytes, fromByte);
-            float maxSize = BitConverter.ToSingle(bytes, fromByte + 4);
+            fromByte += minSize.Sizeof();
 
-            float minSpeed = BitConverter.ToSingle(bytes, fromByte + 8);
-            float maxSpeed = BitConverter.ToSingle(bytes, fromByte + 12);
+            float maxSize = BitConverter.ToSingle(bytes, fromByte);
+            fromByte += maxSize.Sizeof();
+
+            float minSpeed = BitConverter.ToSingle(bytes, fromByte);
+            fromByte += minSpeed.Sizeof();
+
+            float maxSpeed = BitConverter.ToSingle(bytes, fromByte);
 
             return new BallParams(  new Vector2(minSize, maxSize), 
                                     new Vector2(minSpeed, maxSpeed));
         }
         public static byte[] Serialize(BallParams obj)
         {
-            byte[] bytes = new byte[SizeBytes];
+            List<byte> bytes = new List<byte>(obj.Sizeof);
 
-            BitConverter.GetBytes(obj.RangeOfSizes.x).CopyTo(bytes, 0);
-            BitConverter.GetBytes(obj.RangeOfSizes.y).CopyTo(bytes, 4);
+            bytes.AddRange(BitConverter.GetBytes(obj.RangeOfSizes.x));
+            bytes.AddRange(BitConverter.GetBytes(obj.RangeOfSizes.y));
 
-            BitConverter.GetBytes(obj.RangeOfSpeeds.x).CopyTo(bytes, 8);
-            BitConverter.GetBytes(obj.RangeOfSpeeds.y).CopyTo(bytes, 12);
+            bytes.AddRange(BitConverter.GetBytes(obj.RangeOfSpeeds.x));
+            bytes.AddRange(BitConverter.GetBytes(obj.RangeOfSpeeds.y));
 
-            return bytes;
+            return bytes.ToArray();
         }
 
 
@@ -40,6 +46,7 @@ namespace PingPong.Model.Ball
         }
 
 
+        public int Sizeof => _rangeOfSizes.Sizeof() + _rangeOfSpeeds.Sizeof();
         public Vector2 RangeOfSizes => _rangeOfSizes;
         public Vector2 RangeOfSpeeds => _rangeOfSpeeds;
 

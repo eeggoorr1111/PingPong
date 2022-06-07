@@ -18,16 +18,9 @@ namespace PingPong.Model
         [SerializeField] private ModelConfigData _localConfig;
 
 
-        /// <summary>
-        /// Пересоздаем Map, чтобы был вызыван конструктор у Map и были установлены все расчетные данные
-        /// </summary>
-        public void Init()
+        public ModelConfigurator ChangeConfig(MapData map)
         {
-            ChangeConfig(new Map(_localConfig.Map.MinPoint, _localConfig.Map.MaxPoint, _localConfig.AllowableError));
-        }
-        public ModelConfigurator ChangeConfig(Map map)
-        {
-            _localConfig.Map = map;
+            _localConfig.MapData = map;
 
             return this;
         }
@@ -36,7 +29,7 @@ namespace PingPong.Model
             RacketParams pRacket = configFromMaster.RacketParams;
             BallParams pBall = configFromMaster.BallParams;
             float allowableError = configFromMaster.AllowableError;
-            Map map = configFromMaster.Map;
+            Map map = new Map(configFromMaster.MapData, allowableError);
 
             TimeCounterNetwork timeCounter = new TimeCounterNetwork();
 
@@ -56,8 +49,8 @@ namespace PingPong.Model
         {
             RacketParams pRacket = _localConfig.RacketParams;
             BallParams pBall = _localConfig.BallParams;
-            Map map = _localConfig.Map;
             float allowableError = _localConfig.AllowableError;
+            Map map = new Map(_localConfig.MapData, allowableError);
 
             TimeCounterNetwork timeCounter = new TimeCounterNetwork();
 
@@ -78,8 +71,8 @@ namespace PingPong.Model
         {
             RacketParams pRacket = _localConfig.RacketParams;
             BallParams pBall = _localConfig.BallParams;
-            Map map = _localConfig.Map;
             float allowableError = _localConfig.AllowableError;
+            Map map = new Map(_localConfig.MapData, allowableError);
 
             Func<double> timeGetter = () => Time.time;
 

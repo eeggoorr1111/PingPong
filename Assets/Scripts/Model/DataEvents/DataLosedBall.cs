@@ -1,5 +1,7 @@
+using Narratore.Helpers;
 using PingPong.Model.Ball;
 using System;
+using System.Collections.Generic;
 
 
 namespace PingPong.Model
@@ -8,10 +10,18 @@ namespace PingPong.Model
     {
         public static object Deserialize(byte[] bytes)
         {
-            bool isClient = BitConverter.ToBoolean(bytes, 0);
-            float newDiameterBall = BitConverter.ToSingle(bytes, 1);
-            float newSpeedBall = BitConverter.ToSingle(bytes, 5);
-            TrajectoryBall trajectory = TrajectoryBall.Deserialize(bytes, 9);
+            int startByte = 0;
+
+            bool isClient = BitConverter.ToBoolean(bytes, startByte);
+            startByte += isClient.Sizeof();
+
+            float newDiameterBall = BitConverter.ToSingle(bytes, startByte);
+            startByte += newDiameterBall.Sizeof();
+
+            float newSpeedBall = BitConverter.ToSingle(bytes, startByte);
+            startByte += newSpeedBall.Sizeof();
+
+            TrajectoryBall trajectory = TrajectoryBall.Deserialize(bytes, startByte);
 
             return new DataLosedBall(isClient, newDiameterBall, newSpeedBall, trajectory);
         }
@@ -19,15 +29,14 @@ namespace PingPong.Model
         {
             DataLosedBall data = (DataLosedBall)obj;
             TrajectoryBall trajectory = data.NewTrajectoryBall;
-            byte[] bytes = new byte[data.GetSizeInBytes()];
+            List<byte> bytes = new List<byte>(data.Sizeof);
 
-            BitConverter.GetBytes(data.IsClient).CopyTo(bytes, 0);
-            BitConverter.GetBytes(data.NewDiameterBall).CopyTo(bytes, 1);
-            BitConverter.GetBytes(data.NewSpeedBall).CopyTo(bytes, 5);
+            bytes.AddRange(BitConverter.GetBytes(data.IsClient));
+            bytes.AddRange(BitConverter.GetBytes(data.NewDiameterBall));
+            bytes.AddRange(BitConverter.GetBytes(data.NewSpeedBall));
+            bytes.AddRange(TrajectoryBall.Serialize(trajectory));
 
-            trajectory.Serialize().CopyTo(bytes, 9);
-
-            return bytes;
+            return bytes.ToArray();
         }
 
 
@@ -44,11 +53,7 @@ namespace PingPong.Model
         public float NewDiameterBall { get; }
         public float NewSpeedBall { get; }
         public TrajectoryBall NewTrajectoryBall { get; }
-
-
-        public int GetSizeInBytes()
-        {
-            return 1 + 4 + 4 + NewTrajectoryBall.GetSizeInBytes();
-        }
+        public int Sizeof =>    IsClient.Sizeof() + NewDiameterBall.Sizeof() + 
+                                NewSpeedBall.Sizeof() + NewTrajectoryBall.Sizeof;
     }
 }

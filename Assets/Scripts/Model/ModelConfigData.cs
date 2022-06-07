@@ -4,6 +4,8 @@ using PingPong.Model.Racket;
 using PingPong.Model;
 using PingPong.Database;
 using System;
+using System.Collections.Generic;
+using Narratore.Helpers;
 
 
 
@@ -12,43 +14,35 @@ namespace PingPong
     [System.Serializable]
     public sealed class ModelConfigData
     {
-        public static int SizeBytes = 4 + BallParams.SizeBytes + RacketParams.SizeBytes + Map.SizeBytes;
         public static object Deserialize(byte[] bytes)
         {
             ModelConfigData config = new ModelConfigData();
             int startByte = 0;
 
             config._allowableError = BitConverter.ToSingle(bytes, startByte);
-            startByte += 4;
+            startByte += config._allowableError.Sizeof();
 
             config.BallParams = (BallParams)BallParams.Deserialize(bytes, startByte);
-            startByte += BallParams.SizeBytes;
+            startByte += config.BallParams.Sizeof;
 
             config.RacketParams = (RacketParams)RacketParams.Deserialize(bytes, startByte);
-            startByte += RacketParams.SizeBytes;
+            startByte += config.RacketParams.Sizeof;
 
-            config.Map = (Map)Map.Deserialize(bytes, startByte);
+            config.MapData = (MapData)MapData.Deserialize(bytes, startByte);
 
             return config;
         }
         public static byte[] Serialize(object obj)
         {
             ModelConfigData data = (ModelConfigData)obj;
-            byte[] bytes = new byte[SizeBytes];
-            int startByte = 0;
+            List<byte> bytesRes = new List<byte>();
 
-            BitConverter.GetBytes(data.AllowableError).CopyTo(bytes, startByte);
-            startByte += 4;
+            bytesRes.AddRange(BitConverter.GetBytes(data.AllowableError));
+            bytesRes.AddRange(BallParams.Serialize(data.BallParams));
+            bytesRes.AddRange(RacketParams.Serialize(data.RacketParams));
+            bytesRes.AddRange(MapData.Serialize(data.MapData));
 
-            BallParams.Serialize(data.BallParams).CopyTo(bytes, startByte);
-            startByte += BallParams.SizeBytes;
-
-            RacketParams.Serialize(data.RacketParams).CopyTo(bytes, startByte);
-            startByte += RacketParams.SizeBytes;
-
-            Map.Serialize(data.Map).CopyTo(bytes, startByte);
-
-            return bytes;
+            return bytesRes.ToArray();
         }
 
 
@@ -62,7 +56,7 @@ namespace PingPong
             get { return _racketParams; }
             set { _racketParams = value; }
         }
-        public Map Map
+        public MapData MapData
         {
             get { return _map; }
             set { _map = value; }
@@ -74,7 +68,7 @@ namespace PingPong
         [SerializeField] private float _allowableError;
         [SerializeField] private BallParams _ballParams;
         [SerializeField] private RacketParams _racketParams;
-        [SerializeField] private Map _map;
+        [SerializeField] private MapData _map;
         [SerializeField] private DatabaseProvider _dataBase;
     }
 }

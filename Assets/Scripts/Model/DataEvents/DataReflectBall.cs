@@ -1,6 +1,7 @@
 using PingPong.Model.Ball;
+using Narratore.Helpers;
 using System;
-using UnityEngine;
+using System.Collections.Generic;
 
 
 namespace PingPong.Model
@@ -9,22 +10,23 @@ namespace PingPong.Model
     {
         public static object Deserialize(byte[] bytes)
         {
-            bool isClient = BitConverter.ToBoolean(bytes, 0);
-            TrajectoryBall trajectory = TrajectoryBall.Deserialize(bytes, 1);
+            int startByte = 0;
 
-            return new DataReflectBall(isClient, trajectory);
+            bool isClient = BitConverter.ToBoolean(bytes, 0);
+            startByte += isClient.Sizeof();
+
+            return new DataReflectBall(isClient, TrajectoryBall.Deserialize(bytes, startByte));
         }
         public static byte[] Serialize(object obj)
         {
             DataReflectBall data = (DataReflectBall)obj;
             TrajectoryBall trajectory = data.NewTrajectoryBall;
-            byte[] bytes = new byte[data.GetSizeInBytes()];
+            List<byte> bytes = new List<byte>(data.Sizeof);
 
-            BitConverter.GetBytes(data.IsClient).CopyTo(bytes, 0);
+            bytes.AddRange(BitConverter.GetBytes(data.IsClient));
+            bytes.AddRange(TrajectoryBall.Serialize(trajectory));
 
-            trajectory.Serialize().CopyTo(bytes, 1);
-
-            return bytes;
+            return bytes.ToArray();
         }
 
 
@@ -37,11 +39,6 @@ namespace PingPong.Model
 
         public bool IsClient { get; }
         public TrajectoryBall NewTrajectoryBall { get; }
-
-
-        public int GetSizeInBytes()
-        {
-            return 1 + NewTrajectoryBall.GetSizeInBytes();
-        }
+        public int Sizeof => IsClient.Sizeof() + NewTrajectoryBall.Sizeof;
     }
 }
