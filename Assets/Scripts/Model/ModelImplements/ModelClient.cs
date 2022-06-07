@@ -11,7 +11,7 @@ using System;
 
 namespace PingPong.Model
 {
-    public sealed class ModelClient : IModelNetwork
+    public sealed class ModelClient : IModel, IOnEventCallback
     {
         public ModelClient( (IPlayer, RacketModel) meWithRacket,
                             (IPlayer, RacketModel) opponentWithRacket,

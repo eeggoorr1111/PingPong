@@ -6,7 +6,13 @@ using PingPong.Network;
 namespace PingPong
 {
     /// <summary>
-    /// Точка входа и Controller в контексте паттерна MVC
+    /// Точка входа и Controller в контексте паттерна MVC.
+    /// 
+    /// Использование MVC обусловлено тем, что логика View абсолютно одинаковая что для клиента, что для мастера, что 
+    /// при игре оффлайн. 
+    /// 
+    /// Поэтому удобны было вынести отдельно Model, которая имеет 3 реализации. В зависимости от
+    /// того играем оффлайн, играем как клиент или играем как мастер.
     /// </summary>
     public sealed class Main : MonoBehaviour
     {
@@ -16,7 +22,6 @@ namespace PingPong
 
 
         private IModel _model;
-        private IModelNetwork _lastModelNetwork;
 
 
         private void Awake()
@@ -45,27 +50,21 @@ namespace PingPong
         }
         private void NewNetworkGameAsMaster()
         {
-            ModelMaster model = _modelConfigurator.NewNetworkGameAsMaster();
-            NewGame(model);
-
-            _lastModelNetwork = model;
+            _model?.Dispose();
+            NewGame(_modelConfigurator.NewNetworkGameAsMaster());
         }
         private void NewNetworkGameAsClient(ModelConfigData config)
         {
-            ModelClient model = _modelConfigurator.NewNetworkGameAsClient(config);
-            NewGame(model);
-
-            _lastModelNetwork = model;
+            _model?.Dispose();
+            NewGame(_modelConfigurator.NewNetworkGameAsClient(config));
         }
         private void NewLocalGame()
         {
+            _model?.Dispose();
             NewGame(_modelConfigurator.NewLocalGame());
         }
         private void NewGame(IModel model)
         {
-            if (_lastModelNetwork != null)
-                _lastModelNetwork.Dispose();
-
             _model = model;
             _view.NewGame(GetNewGameData(model), model.MoveRacket);
 
@@ -73,13 +72,11 @@ namespace PingPong
         }
         private void EndGame()
         {
-            if (_lastModelNetwork != null)
-                _lastModelNetwork.Dispose();
-
             if (_model != null)
             {
                 _view.EndGame(_model.MoveRacket);
                 _model.LoseBall -= LoseBallHandler;
+                _model.Dispose();
             }
         }
         private void LoseBallHandler(DataLosedBall data)

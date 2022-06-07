@@ -7,7 +7,7 @@ using System;
 
 namespace PingPong.Model
 {
-    public interface IModel
+    public interface IModel : IDisposable
     {
         event Action<DataReflectBall> ReflectedBall;
         event Action<DataLosedBall> LoseBall;

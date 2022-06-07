@@ -103,6 +103,11 @@ namespace PingPong.Model
 
             _lastRicochet = flyToTop == MeRacket.IsTop ? OpponentRacket : MeRacket;
         }
+        public void Dispose()
+        {
+            // Ќе очень хорошо, когда возникают методы без реализации. ќднако в данном случае
+            // это сильно повышает читабельность Main.
+        }
 
 
         private void OnReflectedBall(IPlayer reflector, Vector2 ricochetDir)

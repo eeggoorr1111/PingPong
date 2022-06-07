@@ -10,7 +10,7 @@ using System;
 
 namespace PingPong.Model
 {
-    public sealed class ModelMaster : IModelNetwork
+    public sealed class ModelMaster : IModel, IOnEventCallback
     {
         public ModelMaster(ModelLocal model, TimeCounterNetwork timeCounter)
         {
