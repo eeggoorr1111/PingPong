@@ -4,7 +4,10 @@ namespace PingPong
 {
     public enum NetworkEvents : byte
     {
-        StartedGame,
+        PrepareForGame,
+        ClientReadyToGame,
+        StartGame,
+
         MovedRacket,
         ReflectBall,
         LosedBall

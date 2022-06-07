@@ -106,6 +106,15 @@ namespace PingPong.Model
 
             Ball.ContinueFly();
         }
+        public void NewRound()
+        {
+            bool flyToTop = Random.Range(0f, 1f) > 0.5f;
+
+            NewBall();
+            Ball.ToFly(_tranjectoryBuilder.FlyFromCenterToRandomDir(flyToTop));
+
+            _lastRicochet = flyToTop == MeRacket.IsTop ? OpponentRacket : MeRacket;
+        }
 
 
         private List<RacketModel> GetRacketsOf(IPlayer player)
@@ -117,15 +126,6 @@ namespace PingPong.Model
                     rackets.Add(_racketsOfPlayers[i].Item2);
 
             return rackets;
-        }
-        private void NewRound()
-        {
-            bool flyToTop = Random.Range(0f, 1f) > 0.5f;
-
-            NewBall();
-            Ball.ToFly(_tranjectoryBuilder.FlyFromCenterToRandomDir(flyToTop));
-
-            _lastRicochet = flyToTop == MeRacket.IsTop ? OpponentRacket : MeRacket;
         }
         private bool IsCollisionBallWith(RacketModel racket, out Vector2 ricochetDir)
         {

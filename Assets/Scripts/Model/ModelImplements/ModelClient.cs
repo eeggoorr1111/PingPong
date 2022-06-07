@@ -33,6 +33,9 @@ namespace PingPong.Model
             LoseBall += data => { };
 
             PhotonNetwork.AddCallbackTarget(this);
+
+            RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.MasterClient };
+            PhotonNetwork.RaiseEvent((byte)NetworkEvents.ClientReadyToGame, null, options, new SendOptions());
         }
 
 
@@ -49,6 +52,7 @@ namespace PingPong.Model
 
         private readonly TrajectoryBallBuilder _tranjectoryBuilder;
         private readonly TimeCounterNetwork _timeCounter;
+        private bool _startedGame;
 
 
         public void OnEvent(EventData photonEvent)
@@ -57,6 +61,10 @@ namespace PingPong.Model
 
             switch (code)
             {
+                case NetworkEvents.StartGame:
+                    StartedGame((DataStartedGame)photonEvent.CustomData);
+                    break;
+
                 case NetworkEvents.MovedRacket:
                     OpponentRacket.Move((float)photonEvent.CustomData);
                     break;
@@ -72,23 +80,29 @@ namespace PingPong.Model
         }
         public void MoveRacket(float newPos)
         {
-            MeRacket.Move(newPos);
+            if (_startedGame)
+            {
+                MeRacket.Move(newPos);
 
-            RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.MasterClient };
-            PhotonNetwork.RaiseEvent((byte)NetworkEvents.MovedRacket, newPos, options, new SendOptions());
+                RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.MasterClient };
+                PhotonNetwork.RaiseEvent((byte)NetworkEvents.MovedRacket, newPos, options, new SendOptions());
+            }
         }
         public void NextFrame()
         {
-            Vector2 ricochetDir;
+            if (_startedGame)
+            {
+                Vector2 ricochetDir;
 
-            _timeCounter.NextFrame();
+                _timeCounter.NextFrame();
 
-            if (IsCollisionBallWith(MeRacket, out ricochetDir))
-                Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
-            else if (IsCollisionBallWith(OpponentRacket, out ricochetDir))
-                Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
+                if (IsCollisionBallWith(MeRacket, out ricochetDir))
+                    Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
+                else if (IsCollisionBallWith(OpponentRacket, out ricochetDir))
+                    Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
 
-            Ball.ContinueFly();
+                Ball.ContinueFly();
+            }
         }
         public void Dispose()
         {
@@ -96,6 +110,13 @@ namespace PingPong.Model
         }
 
 
+        private void StartedGame(DataStartedGame data)
+        {
+            _startedGame = true;
+
+            Ball.NewParams(data.SpeedBall, data.DiameterBall);
+            Ball.ToFly(data.TrajectoryBall);
+        }
         private void ReflectedBallHandler(DataReflectBall data)
         {
             IPlayer player = data.IsClient ? PlayerMe : PlayerOpponent;

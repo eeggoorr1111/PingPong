@@ -40,6 +40,7 @@ namespace PingPong.Model
 
         private readonly ModelLocal _modelLocal;
         private readonly TimeCounterNetwork _timeCounter;
+        private bool _gameStarted;
 
 
         public void OnEvent(EventData photonEvent)
@@ -48,6 +49,10 @@ namespace PingPong.Model
 
             switch (code)
             {
+                case NetworkEvents.ClientReadyToGame:
+                    StartGame();
+                    break;
+
                 case NetworkEvents.MovedRacket:
                     OpponentRacket.Move((float)photonEvent.CustomData);
                     break;
@@ -55,15 +60,21 @@ namespace PingPong.Model
         }
         public void MoveRacket(float newPos)
         {
-            _modelLocal.MoveRacket(newPos);
+            if (_gameStarted)
+            {
+                _modelLocal.MoveRacket(newPos);
 
-            RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.Others };
-            PhotonNetwork.RaiseEvent((byte)NetworkEvents.MovedRacket, newPos, options, new SendOptions());
+                RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.Others };
+                PhotonNetwork.RaiseEvent((byte)NetworkEvents.MovedRacket, newPos, options, new SendOptions());
+            }
         }
         public void NextFrame()
         {
-            _timeCounter.NextFrame();
-            _modelLocal.NextFrame();
+            if (_gameStarted)
+            {
+                _timeCounter.NextFrame();
+                _modelLocal.NextFrame();
+            }
         }
         public void Dispose()
         {
@@ -74,6 +85,17 @@ namespace PingPong.Model
         }
 
 
+        private void StartGame()
+        {
+            _gameStarted = true;
+            _modelLocal.NewRound();
+
+            BallModel ball = _modelLocal.Ball;
+            DataStartedGame data = new DataStartedGame(ball.Diameter, ball.Speed, ball.Trajectory);
+            RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.Others };
+
+            PhotonNetwork.RaiseEvent((byte)NetworkEvents.StartGame, data, options, new SendOptions());
+        }
         private void ReflectedBallHandler(DataReflectBall data)
         {
             RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.Others };

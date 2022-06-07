@@ -25,7 +25,9 @@ namespace PingPong.Network
         {
             PhotonPeer.RegisterType(typeof(DataReflectBall), 0, DataReflectBall.Serialize, DataReflectBall.Deserialize);
             PhotonPeer.RegisterType(typeof(DataLosedBall), 1, DataLosedBall.Serialize, DataLosedBall.Deserialize);
-            PhotonPeer.RegisterType(typeof(ModelConfigData), 2, ModelConfigData.Serialize, ModelConfigData.Deserialize);
+            PhotonPeer.RegisterType(typeof(DataStartedGame), 2, DataStartedGame.Serialize, DataStartedGame.Deserialize);
+            PhotonPeer.RegisterType(typeof(ModelConfigData), 3, ModelConfigData.Serialize, ModelConfigData.Deserialize);
+            
 
             PhotonNetwork.AddCallbackTarget(this);
 
@@ -81,14 +83,14 @@ namespace PingPong.Network
             {
                 Debug.Log("StartedGameAsMaster");
                 RaiseEventOptions options = new RaiseEventOptions() { Receivers = ReceiverGroup.Others };
-                PhotonNetwork.RaiseEvent((byte)NetworkEvents.StartedGame, ConfigGame, options, new SendOptions());
+                PhotonNetwork.RaiseEvent((byte)NetworkEvents.PrepareForGame, ConfigGame, options, new SendOptions());
                 NewGameAsMaster.Invoke();
             }
         }
         public void OnEvent(EventData photonEvent)
         {
             NetworkEvents code = (NetworkEvents)photonEvent.Code;
-            if (code == NetworkEvents.StartedGame)
+            if (code == NetworkEvents.PrepareForGame)
             {
                 Debug.Log("StartedGameAsClient");
                 NewGameAsClient.Invoke((ModelConfigData)photonEvent.CustomData);

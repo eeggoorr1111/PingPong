@@ -1031,7 +1031,6 @@ GameObject:
   - component: {fileID: 657378443}
   - component: {fileID: 657378444}
   - component: {fileID: 657378445}
-  - component: {fileID: 657378446}
   - component: {fileID: 657378447}
   m_Layer: 0
   m_Name: PingPong
@@ -1094,18 +1093,6 @@ MonoBehaviour:
       _minPoint: {x: -2.36, y: -5.07}
       _maxPoint: {x: 2.346, y: 1.633}
   _dataBase: {fileID: 11400000, guid: 08fc4c4613e4fe049bf9c9c1f72ed261, type: 2}
---- !u!114 &657378446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 657378442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0648081d43007e943835121f2ccf63bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &657378447
 MonoBehaviour:
   m_ObjectHideFlags: 0
