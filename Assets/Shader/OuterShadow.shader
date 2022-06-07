@@ -2,6 +2,7 @@ Shader "PingPong/OuterShadow"
 {
     Properties
     {
+        _MainTex ("Tex", 2D) = "white" {}
         _ColorShadow ("Color shadow", Color) = (0,0,0,1)
         _ColorBack ("Color back", Color) = (1,1,1,1)
         _Size ("Size shadow", float) = 0.01
