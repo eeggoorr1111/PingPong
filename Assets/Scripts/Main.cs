@@ -62,12 +62,16 @@ namespace PingPong
         }
         private void NewGame(IModel model)
         {
-            _model?.Dispose();
+            if (_model != null)
+            {
+                _model.LoseBall -= LoseBallHandler;
+                _model.Dispose();
+            }
+
             _model = model;
-
-            _view.NewGame(GetNewGameData(model), model.MoveRacket);
-
             _model.LoseBall += LoseBallHandler;
+
+            _view.NewGame(GetNewGameData(_model), _model.MoveRacket);
         }
         private void EndGame()
         {
