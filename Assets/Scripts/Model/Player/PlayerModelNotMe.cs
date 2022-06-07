@@ -7,6 +7,13 @@ namespace PingPong.Model.Player
     /// </summary>
     public sealed class PlayerModelNotMe : IPlayer
     {
+        public PlayerModelNotMe(int id)
+        {
+            Id = id;
+        }
+
+
+        public int Id { get; }
         public int RecordReflectedBalls { get; private set; }
         public int ReflectedBalls { get; private set; }
 

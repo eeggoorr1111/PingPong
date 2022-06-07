@@ -76,33 +76,21 @@ namespace PingPong.Model
             if (_lastRicochet == OpponentRacket && IsCollisionBallWith(MeRacket, out ricochetDir))
             {
                 _lastRicochet = MeRacket;
-                Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
-                PlayerMe.ReflectedBall();
-
-                ReflectedBall.Invoke(new DataReflectBall(false, Ball.Trajectory));
+                OnReflectedBall(PlayerMe, ricochetDir);
             }
             else if (_lastRicochet == MeRacket && IsCollisionBallWith(OpponentRacket, out ricochetDir))
             {
                 _lastRicochet = OpponentRacket;
-                Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
-                PlayerOpponent.ReflectedBall();
-
-                ReflectedBall.Invoke(new DataReflectBall(true, Ball.Trajectory));
+                OnReflectedBall(PlayerOpponent, ricochetDir);
             }
             else if (IsCollisionBallWith(_map.BottomBorder))
             {
-                PlayerMe.LoseBall();
-                NewRound();
-
-                LoseBall.Invoke(new DataLosedBall(false, Ball.Diameter, Ball.Speed, Ball.Trajectory));
+                OnLosedBall(PlayerMe);
             }
             else if (IsCollisionBallWith(_map.TopBorder))
             {
-                PlayerOpponent.LoseBall();
-                NewRound();
-
-                LoseBall.Invoke(new DataLosedBall(true, Ball.Diameter, Ball.Speed, Ball.Trajectory));
-            }   
+                OnLosedBall(PlayerOpponent);
+            }
 
             Ball.ContinueFly();
         }
@@ -117,6 +105,20 @@ namespace PingPong.Model
         }
 
 
+        private void OnReflectedBall(IPlayer reflector, Vector2 ricochetDir)
+        {
+            reflector.ReflectedBall();
+
+            Ball.ToFly(_tranjectoryBuilder.Create(Ball.Pos, ricochetDir));
+            ReflectedBall.Invoke(new DataReflectBall(reflector.Id, Ball.Trajectory));
+        }
+        private void OnLosedBall(IPlayer loser)
+        {
+            loser.LoseBall();
+            NewRound();
+
+            LoseBall.Invoke(new DataLosedBall(loser.Id, Ball.Diameter, Ball.Speed, Ball.Trajectory));
+        }
         private List<RacketModel> GetRacketsOf(IPlayer player)
         {
             List<RacketModel> rackets = new List<RacketModel>();

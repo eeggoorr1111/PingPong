@@ -119,7 +119,7 @@ namespace PingPong.Model
         }
         private void ReflectedBallHandler(DataReflectBall data)
         {
-            IPlayer player = data.IsClient ? PlayerMe : PlayerOpponent;
+            IPlayer player = data.PlayerId == PlayerMe.Id ? PlayerMe : PlayerOpponent;
             player.ReflectedBall();
 
             ReflectedBall.Invoke(data);
@@ -128,7 +128,7 @@ namespace PingPong.Model
         }
         private void LosedBallHandler(DataLosedBall data)
         {
-            IPlayer player = data.IsClient ? PlayerMe : PlayerOpponent;
+            IPlayer player = data.PlayerId == PlayerMe.Id ? PlayerMe : PlayerOpponent;
             player.LoseBall();
 
             Ball.NewParams(data.NewSpeedBall, data.NewDiameterBall);

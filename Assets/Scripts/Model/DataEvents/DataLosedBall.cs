@@ -12,8 +12,8 @@ namespace PingPong.Model
         {
             int startByte = 0;
 
-            bool isClient = BitConverter.ToBoolean(bytes, startByte);
-            startByte += isClient.Sizeof();
+            int playerId = BitConverter.ToInt32(bytes, startByte);
+            startByte += playerId.Sizeof();
 
             float newDiameterBall = BitConverter.ToSingle(bytes, startByte);
             startByte += newDiameterBall.Sizeof();
@@ -23,7 +23,7 @@ namespace PingPong.Model
 
             TrajectoryBall trajectory = TrajectoryBall.Deserialize(bytes, startByte);
 
-            return new DataLosedBall(isClient, newDiameterBall, newSpeedBall, trajectory);
+            return new DataLosedBall(playerId, newDiameterBall, newSpeedBall, trajectory);
         }
         public static byte[] Serialize(object obj)
         {
@@ -31,7 +31,7 @@ namespace PingPong.Model
             TrajectoryBall trajectory = data.NewTrajectoryBall;
             List<byte> bytes = new List<byte>(data.Sizeof);
 
-            bytes.AddRange(BitConverter.GetBytes(data.IsClient));
+            bytes.AddRange(BitConverter.GetBytes(data.PlayerId));
             bytes.AddRange(BitConverter.GetBytes(data.NewDiameterBall));
             bytes.AddRange(BitConverter.GetBytes(data.NewSpeedBall));
             bytes.AddRange(TrajectoryBall.Serialize(trajectory));
@@ -40,20 +40,20 @@ namespace PingPong.Model
         }
 
 
-        public DataLosedBall(bool isClient, float newDiameterBall, float newSpeedBall, TrajectoryBall trajectory)
+        public DataLosedBall(int playerId, float newDiameterBall, float newSpeedBall, TrajectoryBall trajectory)
         {
-            IsClient = isClient;
+            PlayerId = playerId;
             NewDiameterBall = newDiameterBall;
             NewSpeedBall = newSpeedBall;
             NewTrajectoryBall = trajectory;
         }
 
 
-        public bool IsClient { get; }
+        public int PlayerId { get; }
         public float NewDiameterBall { get; }
         public float NewSpeedBall { get; }
         public TrajectoryBall NewTrajectoryBall { get; }
-        public int Sizeof =>    IsClient.Sizeof() + NewDiameterBall.Sizeof() + 
+        public int Sizeof => PlayerId.Sizeof() + NewDiameterBall.Sizeof() + 
                                 NewSpeedBall.Sizeof() + NewTrajectoryBall.Sizeof;
     }
 }

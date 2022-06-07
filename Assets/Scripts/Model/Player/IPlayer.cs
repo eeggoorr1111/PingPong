@@ -6,6 +6,7 @@ namespace PingPong.Model.Player
     {
         int RecordReflectedBalls { get; }
         int ReflectedBalls { get; }
+        int Id { get; }
 
 
         void ReflectedBall();

@@ -39,8 +39,8 @@ namespace PingPong.Model
             RacketModel bottomRacket = new RacketModel(map, pRacket, ball, false, allowableError);
             TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(map, pRacket, ball, timeCounter.GetTime, allowableError);
 
-            IPlayer me = new PlayerModel(_dataBase);
-            IPlayer notMe = new PlayerModelNotMe();
+            IPlayer me = new PlayerModel(2, _dataBase);
+            IPlayer notMe = new PlayerModelNotMe(1);
 
             ModelClient model = new ModelClient((me, topRacket), (notMe, bottomRacket), ball, trajectoryBuilder, timeCounter);
 
@@ -59,9 +59,9 @@ namespace PingPong.Model
             RacketModel topRacket = new RacketModel(map, pRacket, ball, true, allowableError);
             RacketModel bottomRacket = new RacketModel(map, pRacket, ball, false, allowableError);
             TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(map, pRacket, ball, timeCounter.GetTime, allowableError);
-
-            IPlayer me = new PlayerModel(_dataBase);
-            IPlayer notMe = new PlayerModelNotMe();
+            
+            IPlayer me = new PlayerModel(1, _dataBase);
+            IPlayer notMe = new PlayerModelNotMe(2);
 
             ModelLocal modelLocal = new ModelLocal((me, bottomRacket), (notMe, topRacket), ball, pBall, map, trajectoryBuilder);
             ModelMaster modelMaster = new ModelMaster(modelLocal, timeCounter);
@@ -82,7 +82,7 @@ namespace PingPong.Model
             RacketModel bottomRacket = new RacketModel(map, pRacket, ball, false, allowableError);
             TrajectoryBallBuilder trajectoryBuilder = new TrajectoryBallBuilder(map, pRacket, ball, timeGetter, allowableError);
 
-            PlayerModel me = new PlayerModel(_dataBase);
+            PlayerModel me = new PlayerModel(0, _dataBase);
 
             return new ModelLocal((me, topRacket), (me, bottomRacket), ball, pBall, map, trajectoryBuilder);
         }

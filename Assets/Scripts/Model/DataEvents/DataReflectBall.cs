@@ -12,10 +12,10 @@ namespace PingPong.Model
         {
             int startByte = 0;
 
-            bool isClient = BitConverter.ToBoolean(bytes, 0);
-            startByte += isClient.Sizeof();
+            int playerId = BitConverter.ToInt32(bytes, 0);
+            startByte += playerId.Sizeof();
 
-            return new DataReflectBall(isClient, TrajectoryBall.Deserialize(bytes, startByte));
+            return new DataReflectBall(playerId, TrajectoryBall.Deserialize(bytes, startByte));
         }
         public static byte[] Serialize(object obj)
         {
@@ -23,22 +23,22 @@ namespace PingPong.Model
             TrajectoryBall trajectory = data.NewTrajectoryBall;
             List<byte> bytes = new List<byte>(data.Sizeof);
 
-            bytes.AddRange(BitConverter.GetBytes(data.IsClient));
+            bytes.AddRange(BitConverter.GetBytes(data.PlayerId));
             bytes.AddRange(TrajectoryBall.Serialize(trajectory));
 
             return bytes.ToArray();
         }
 
 
-        public DataReflectBall(bool isClient, TrajectoryBall trajectory)
+        public DataReflectBall(int playerId, TrajectoryBall trajectory)
         {
-            IsClient = isClient;
+            PlayerId = playerId;
             NewTrajectoryBall = trajectory;
         }
 
 
-        public bool IsClient { get; }
+        public int PlayerId { get; }
         public TrajectoryBall NewTrajectoryBall { get; }
-        public int Sizeof => IsClient.Sizeof() + NewTrajectoryBall.Sizeof;
+        public int Sizeof => PlayerId.Sizeof() + NewTrajectoryBall.Sizeof;
     }
 }
