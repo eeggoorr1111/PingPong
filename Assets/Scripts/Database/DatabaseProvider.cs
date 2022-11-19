@@ -22,14 +22,14 @@ namespace PingPong.Database
             PlayerPrefs.SetInt(_reflectedBallsKey, record);
             PlayerPrefs.Save();
         }
-        public int GetMaxReflectedBalls()
-        {
-            return PlayerPrefs.GetInt(_reflectedBallsKey);
-        }
-        public void SaveIdxSkinOfBall(int index)
+        public void SetIdxSkinOfBall(int index)
         {
             PlayerPrefs.SetInt(_skinBallKey, index);
             PlayerPrefs.Save();
+        }
+        public int GetMaxReflectedBalls()
+        {
+            return PlayerPrefs.GetInt(_reflectedBallsKey);
         }
         public Sprite GetSavedSkinOfBall()
         {

@@ -63,7 +63,7 @@ namespace PingPong.View.UI.Windows
         }
         private void OnSelectedSkinOfBall(int index)
         {
-            _database.SaveIdxSkinOfBall(index);
+            _database.SetIdxSkinOfBall(index);
 
             SelectedSkinOfBall.Invoke(index);
             Close();
