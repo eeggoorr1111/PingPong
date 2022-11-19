@@ -19,12 +19,6 @@ namespace PingPong.Model
         [SerializeField] private DatabaseProvider _dataBase;
 
 
-        public ModelConfigurator ChangeConfig(MapData map)
-        {
-            _localConfig.MapData = map;
-
-            return this;
-        }
         public ClientModel NewNetworkGameAsClient(ModelConfigData configFromMaster)
         {
             RacketParams pRacket = configFromMaster.RacketParams;
