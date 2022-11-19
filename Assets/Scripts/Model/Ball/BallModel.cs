@@ -1,7 +1,5 @@
-using UnityEngine;
-using Narratore.DebugTools;
 using System;
-using Random = UnityEngine.Random;
+using UnityEngine;
 
 namespace PingPong.Model.Ball
 {
@@ -35,12 +33,6 @@ namespace PingPong.Model.Ball
         public void ContinueFly()
         {
             Pos = Trajectory.GetPosForTime(_timeGetter.Invoke());
-
-            /*DrawerGizmos.Draw(() => {
-                Gizmos.color = Color.red;
-                foreach (var corner in Trajectory.Corners)
-                    Gizmos.DrawSphere(new Vector3(corner.x, corner.y, 0), 0.1f);
-            });*/
         }
     }
 }
