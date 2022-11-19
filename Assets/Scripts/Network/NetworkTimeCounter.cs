@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PingPong.Network
 {
-    public sealed class NetworkTimeCounter
+    public sealed class NetworkTimeCounter : IReadOnlyTimeCounter
     {
         public NetworkTimeCounter()
         {
