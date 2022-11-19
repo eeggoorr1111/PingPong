@@ -1069,6 +1069,7 @@ MonoBehaviour:
   _view: {fileID: 1141243508}
   _modelConfigurator: {fileID: 657378445}
   _networkLobby: {fileID: 657378447}
+  _database: {fileID: 11400000, guid: 08fc4c4613e4fe049bf9c9c1f72ed261, type: 2}
 --- !u!114 &657378445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1688,7 +1689,6 @@ MonoBehaviour:
   _racket1: {fileID: 1420151769}
   _racket2: {fileID: 543990280}
   _joystick: {fileID: 2082425126}
-  _database: {fileID: 11400000, guid: 08fc4c4613e4fe049bf9c9c1f72ed261, type: 2}
   _ui: {fileID: 1141243509}
 --- !u!114 &1141243509
 MonoBehaviour:

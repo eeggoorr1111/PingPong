@@ -5,7 +5,7 @@ using PingPong.View;
 namespace PingPong.Database
 {
     [CreateAssetMenu(fileName = "DatabaseProvider", menuName = "PingPong/CreateDatabaseProvider")]
-    public sealed class DatabaseProvider : ScriptableObject
+    public sealed class DatabaseProvider : ScriptableObject, IReadOnlyDatabaseProvider
     {
         private static readonly string _reflectedBallsKey = "ReflectedBalls";
         private static readonly string _skinBallKey = "SkinBall";

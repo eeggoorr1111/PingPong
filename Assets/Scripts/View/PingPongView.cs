@@ -24,11 +24,10 @@ namespace PingPong.View
         [Header("INPUT")]
         [SerializeField] private Joystick _joystick;
 
-        [Header("DATABASE")]
-        [SerializeField] private DatabaseProvider _database;
-
         [Header("UI")]
         [SerializeField] private PingPongUI _ui;
+
+        private IReadOnlyDatabaseProvider _database;
 
 
         public void AwakeCustom()
@@ -43,12 +42,14 @@ namespace PingPong.View
         {
             _ui.StartCustom();
             _joystick.StartCustom();
-            _ball.SetSkin(_database.GetSavedSkinOfBall());
 
             _ui.SkinsWindow.SelectedSkinOfBall += SetSkinOnBall;
         }
-        public void NewGame(NewGameData data, Action<float> callbackJoystick)
+        public void NewGame(NewGameData data, IReadOnlyDatabaseProvider database, Action<float> callbackJoystick)
         {
+            _database = database;
+            _ball.SetSkin(_database.GetSavedSkinOfBall());
+
             JoystickMoved += callbackJoystick;
 
             _racket1.SetSize(data.SizeRacket1);

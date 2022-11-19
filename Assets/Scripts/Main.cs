@@ -2,6 +2,7 @@ using UnityEngine;
 using PingPong.View;
 using PingPong.Model;
 using PingPong.Network;
+using PingPong.Database;
 
 namespace PingPong
 {
@@ -19,6 +20,7 @@ namespace PingPong
         [SerializeField] private PingPongView _view;
         [SerializeField] private ModelConfigurator _modelConfigurator;
         [SerializeField] private NetworkLobby _networkLobby;
+        [SerializeField] private DatabaseProvider _database;
 
 
         private IModel _model;
@@ -65,7 +67,7 @@ namespace PingPong
             _model?.Dispose();
             _model = model;
 
-            _view.NewGame(GetNewGameData(model), model.MoveRacket);
+            _view.NewGame(GetNewGameData(model), _database, model.MoveRacket);
 
             _model.LoseBall += LoseBallHandler;
         }
