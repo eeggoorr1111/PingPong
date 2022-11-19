@@ -18,7 +18,7 @@ namespace PingPong
     {
         [SerializeField] private PingPongView _view;
         [SerializeField] private ModelConfigurator _modelConfigurator;
-        [SerializeField] private NetworkLobbyPingPong _networkLobby;
+        [SerializeField] private NetworkLobby _networkLobby;
 
 
         private IModel _model;
@@ -31,12 +31,12 @@ namespace PingPong
         private void Start()
         {
             _view.StartCustom();
-            _view.UI.WindowStart.PressedStartGameBtn += NewLocalGame;
-            _view.UI.WindowStart.PressedCreateRoomBtn += _networkLobby.CreateRoom;
-            _view.UI.WindowStart.PressedJoinRoomBtn += _networkLobby.JoinRoom;
+            _view.UI.StartWindow.PressedStartGameBtn += NewLocalGame;
+            _view.UI.StartWindow.PressedCreateRoomBtn += _networkLobby.CreateRoom;
+            _view.UI.StartWindow.PressedJoinRoomBtn += _networkLobby.JoinRoom;
 
             _networkLobby.Init(_modelConfigurator.Config);
-            _networkLobby.ConnectedToMasterServer += _view.UI.WindowStart.ActivateNetworkButtons;
+            _networkLobby.ConnectedToMasterServer += _view.UI.StartWindow.ActivateNetworkButtons;
             _networkLobby.NewGameAsMaster += NewNetworkGameAsMaster;
             _networkLobby.NewGameAsClient += NewNetworkGameAsClient;
         }
@@ -78,7 +78,7 @@ namespace PingPong
                 _model.Dispose();
             }
         }
-        private void LoseBallHandler(DataLosedBall data)
+        private void LoseBallHandler(LosedBallData data)
         {
             _view.LosedBall(data.NewDiameterBall);
         }
@@ -106,11 +106,11 @@ namespace PingPong
         }
         private void OnDestroy()
         {
-            _view.UI.WindowStart.PressedStartGameBtn -= NewLocalGame;
-            _view.UI.WindowStart.PressedCreateRoomBtn -= _networkLobby.CreateRoom;
-            _view.UI.WindowStart.PressedJoinRoomBtn -= _networkLobby.JoinRoom;
+            _view.UI.StartWindow.PressedStartGameBtn -= NewLocalGame;
+            _view.UI.StartWindow.PressedCreateRoomBtn -= _networkLobby.CreateRoom;
+            _view.UI.StartWindow.PressedJoinRoomBtn -= _networkLobby.JoinRoom;
 
-            _networkLobby.ConnectedToMasterServer -= _view.UI.WindowStart.ActivateNetworkButtons;
+            _networkLobby.ConnectedToMasterServer -= _view.UI.StartWindow.ActivateNetworkButtons;
             _networkLobby.NewGameAsMaster -= NewNetworkGameAsMaster;
             _networkLobby.NewGameAsClient -= NewNetworkGameAsClient;
 

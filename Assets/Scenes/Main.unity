@@ -1528,7 +1528,7 @@ GameObject:
   - component: {fileID: 1031821660}
   - component: {fileID: 1031821663}
   m_Layer: 0
-  m_Name: WindowSkins
+  m_Name: SkinsWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1702,8 +1702,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4a764eec66c4f640a22b3383a39726f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skinWindows: {fileID: 1031821663}
-  _startWindows: {fileID: 1818316803}
+  _skinWindow: {fileID: 1031821663}
+  _startWindow: {fileID: 1818316803}
   _openWindowSkinsBtn: {fileID: 1835831162}
   _reflectedBallLbl: {fileID: 221540028}
   _recordReflectedBallLbl: {fileID: 1530517186}
@@ -2925,7 +2925,7 @@ GameObject:
   - component: {fileID: 1818316804}
   - component: {fileID: 1818316803}
   m_Layer: 0
-  m_Name: WindowStart
+  m_Name: StartWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

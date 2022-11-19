@@ -10,7 +10,7 @@ namespace PingPong.View
 {
     public class PingPongView : MonoBehaviour
     {
-        public UIPingPong UI => _ui;
+        public PingPongUI UI => _ui;
 
 
         public event Action<float> JoystickMoved;
@@ -28,7 +28,7 @@ namespace PingPong.View
         [SerializeField] private DatabaseProvider _database;
 
         [Header("UI")]
-        [SerializeField] private UIPingPong _ui;
+        [SerializeField] private PingPongUI _ui;
 
 
         public void AwakeCustom()
@@ -45,7 +45,7 @@ namespace PingPong.View
             _joystick.StartCustom();
             _ball.SetSkin(_database.GetSavedSkinOfBall());
 
-            _ui.WindowSkins.SelectedSkinOfBall += SetSkinOnBall;
+            _ui.SkinsWindow.SelectedSkinOfBall += SetSkinOnBall;
         }
         public void NewGame(NewGameData data, Action<float> callbackJoystick)
         {
@@ -89,7 +89,7 @@ namespace PingPong.View
         }
         private void OnDestroy()
         {
-            _ui.WindowSkins.SelectedSkinOfBall -= SetSkinOnBall;
+            _ui.SkinsWindow.SelectedSkinOfBall -= SetSkinOnBall;
         }
 
 

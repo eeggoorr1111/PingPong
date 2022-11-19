@@ -53,7 +53,7 @@ namespace PingPong.Model
         private readonly Func<double> _timeGetter;
 
 
-        public TrajectoryBall FlyFromCenterToRandomDir(bool isToTop)
+        public BallTrajectory FlyFromCenterToRandomDir(bool isToTop)
         {
             float angle = Random.Range(_pRacket.MinAngleRicochet, _pRacket.MaxAngleRicochet);
             float angleRad = angle * Mathf.Deg2Rad;
@@ -61,7 +61,7 @@ namespace PingPong.Model
 
             return Create(_map.Center, isToTop ? randomDir : -randomDir);
         }
-        public TrajectoryBall Create(Vector2 from, Vector2 direction)
+        public BallTrajectory Create(Vector2 from, Vector2 direction)
         {
             _corners.Clear();
             _corners.Add(from);
@@ -99,7 +99,7 @@ namespace PingPong.Model
 
             double timeNow = (float)_timeGetter.Invoke();
 
-            return new TrajectoryBall(_corners.ToArray(), timeNow, timeNow + GetTimeFly(_corners));
+            return new BallTrajectory(_corners.ToArray(), timeNow, timeNow + GetTimeFly(_corners));
         }
 
 

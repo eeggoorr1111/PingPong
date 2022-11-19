@@ -9,8 +9,8 @@ namespace PingPong.Model
 {
     public interface IModel : IDisposable
     {
-        event Action<DataReflectBall> ReflectedBall;
-        event Action<DataLosedBall> LoseBall;
+        event Action<ReflectBallData> ReflectedBall;
+        event Action<LosedBallData> LoseBall;
 
 
         RacketModel MeRacket { get; }

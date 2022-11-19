@@ -11,7 +11,7 @@ namespace PingPong.Database
         private static readonly string _skinBallKey = "SkinBall";
 
 
-        public int CountSkins => _skinsDatabase.CountSkins;
+        public int SkinsCount => _skinsDatabase.SkinsCount;
 
 
         [SerializeField] private SkinsDatabase _skinsDatabase;

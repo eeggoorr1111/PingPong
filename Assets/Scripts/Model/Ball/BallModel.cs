@@ -17,7 +17,7 @@ namespace PingPong.Model.Ball
         public float Diameter { get; private set; }
         public float Radius => Diameter / 2;
         public Vector2 Pos { get; private set; }
-        public TrajectoryBall Trajectory { get; private set; }
+        public BallTrajectory Trajectory { get; private set; }
 
 
         private readonly Func<double> _timeGetter;
@@ -28,7 +28,7 @@ namespace PingPong.Model.Ball
             Speed = newSpeed; 
             Diameter = newDiameter;
         }
-        public void ToFly(TrajectoryBall trajectory)
+        public void ToFly(BallTrajectory trajectory)
         {
             Trajectory = trajectory;
         }
